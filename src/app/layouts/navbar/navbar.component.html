@@ -1,1 +1,15 @@
-<p>navbar works!</p>
+<!DOCTYPE html>
+<nav class="flex flex-row items-center justify-center w-full h-16 px-[10%] text-[10pt] font-[500]">
+    <div class="flex flex-row items-center justify-center w-full h-full">
+        <div class="flex flex-row gap-5 text-500 items-center justify-start w-full h-full">
+            <a routerLink="home" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Home</a>
+            <a routerLink="catalog" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Catalog</a>
+            <a routerLink="dashboard" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Dashboard</a>
+            <a routerLink="about" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">About</a>
+        </div>
+        <div class="flex flex-row gap-5 items-center justify-end w-full h-full">
+            <a routerLink="auth/login" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Log in</a>
+            <a routerLink="auth/register" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Register</a>
+        </div>
+    </div>
+</nav>
