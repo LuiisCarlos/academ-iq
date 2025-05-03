@@ -1,1 +1,263 @@
-<p>dashboard works!</p>
+<div class="min-h-screen p-6">
+    <div class="max-w-[90rem] mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl text-navy font-bold">My Learning Dashboard</h1>
+            <p class="text-[#666666] mt-1">Welcome back! Continue your learning journey.</p>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <nav class="flex border-b border-[#e0e0e0] mb-8">
+            @for (tab of tabs; track tab.id) {
+            <button (click)="setActiveTab(tab.id)" class="text-sm font-medium px-6 py-3 relative hover:cursor-pointer"
+                [class.text-navy-800]="activeTab === tab.id" [class.text-zinc-500]="activeTab !== tab.id">
+                {{ tab.label }}
+                @if (activeTab === tab.id) {
+                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-pink-600 rounded-t"></span>
+                }
+            </button>
+            }
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Courses Tab -->
+            @if (activeTab === 'courses') {
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                @for (enrollment of enrollmentsActive(); track enrollment) {
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-40 relative bg-cover bg-center bg-no-repeat"
+                        [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+
+                        <span
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full text-xs font-medium text-zinc-900">
+                            {{ enrollment.course.category.name }}
+                        </span>
+                        @if (enrollment.isFavorite) {
+                        <button (click)="setIsFavorite(enrollment.course.id, false)"
+                            class="absolute top-3 right-12 bg-white/85 w-7.5 h-7.5 rounded-full flex items-center justify-center text-black hover:text-pink-600 hover:bg-white/95 hover:scale-110 cursor-pointer transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53z" />
+                            </svg>
+                        </button>
+                        } @else {
+                        <button (click)="setIsFavorite(enrollment.course.id, true)"
+                            class="absolute top-3 right-12 bg-white/85 w-7.5 h-7.5 rounded-full flex items-center justify-center text-black hover:text-pink-600 hover:bg-white/95 hover:scale-110 cursor-pointer transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" />
+                            </svg>
+                        </button>
+                        }
+                        <button (click)="setIsArchived(enrollment.course.id, true)"
+                            class="absolute top-3 right-3 bg-white/85 w-7.5 h-7.5 rounded-full flex items-center justify-center text-black hover:text-pink-600 hover:bg-white/95 hover:scale-110 cursor-pointer transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2m2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-sm mb-4">By {{ enrollment.course.author }}</p>
+
+                        <div class="mb-4">
+                            <div class="h-1.5 bg-zinc-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-navy rounded-full"
+                                    [style.width]="(enrollment.progress * 100) + '%'"> <!-- TODO: Review this -->
+                                </div>
+                            </div>
+                            <p class="text-xs text-zinc-500 mt-1">{{ enrollment.progress * 100 }} % completed</p>
+                            <!-- TODO: Review this -->
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button [routerLink]="['/courses/watch/', enrollment.course.id]"
+                                class="flex-1 text-white text-sm font-medium py-2 px-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
+                                Continue
+                            </button>
+                            <button [routerLink]="['/courses/',enrollment.course.id]"
+                                class="flex-1 text-zinc-800 text-sm font-medium py-2 px-4 border border-zinc-300 rounded hover:border-slate-800 hover:text-navy cursor-pointer transition duration-300">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                @if (enrollmentsActive().length === 0) {
+                <div class="col-span-full py-12 text-center">
+                    <div class="max-w-md mx-auto">
+                        <!-- Nuevo icono: una carpeta vacía -->
+                        <svg class="mx-auto h-12 w-12 text-zinc-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-zinc-900">No active courses</h3>
+                        <p class="mt-1 text-zinc-500">You’re not enrolled in any courses yet.</p>
+                        <button routerLink="/catalog"
+                            class="text-white text-sm font-medium py-2 px-4 mt-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
+                            Browse Courses
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Favourites Tab -->
+            @if (activeTab === 'favorites') {
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                @for (enrollment of enrollmentsFavorites(); track enrollment) {
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-40 relative bg-cover bg-center bg-no-repeat"
+                        [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+
+                        <span
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full text-xs font-medium text-zinc-900">
+                            {{ enrollment.course.category.name }}
+                        </span>
+                        <button (click)="setIsFavorite(enrollment.course.id, false)"
+                            class="absolute top-3 right-3 bg-white/85 w-7.5 h-7.5 rounded-full flex items-center justify-center text-blck hover:text-pink-600 hover:bg-white/95 hover:scale-110 cursor-pointer transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-sm mb-4">By {{ enrollment.course.author }}</p>
+                        <button [routerLink]="['/courses/watch', enrollment.course.id]"
+                            class="text-white text-sm font-medium w-full py-2 px-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
+                            Start
+                        </button>
+                    </div>
+                </div>
+                }
+
+                @if (enrollmentsFavorites().length === 0) {
+                <div class="col-span-full py-12 text-center">
+                    <div class="max-w-md mx-auto">
+                        <svg class="mx-auto h-12 w-12 text-zinc-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-zinc-900">No favorite courses yet</h3>
+                        <p class="mt-1 text-zinc-500">Courses you favorite will appear here.</p>
+                        <button routerLink="/catalog"
+                            class="text-white text-sm font-medium py-2 px-4 mt-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
+                            Browse Courses
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Archived Tab -->
+            @if (activeTab === 'archived') {
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                @for (enrollment of enrollmentsArchived(); track enrollment) {
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-40 relative bg-cover bg-center bg-no-repeat"
+                        [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+
+                        <span
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full text-xs font-medium text-navy">
+                            {{ enrollment.course.category.name }}
+                        </span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-zinc-900 mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-sm mb-4">By {{ enrollment.course.author }}</p>
+                        <button (click)="setIsArchived(enrollment.course.id, false)"
+                            class="text-white text-sm font-medium py-2 px-4 w-full rounded bg-navy hover:bg-slate-800 cursor-pointer transition duration-300">
+                            Restore
+                        </button>
+                    </div>
+                </div>
+                }
+
+                @if (enrollmentsArchived().length === 0) {
+                <div class="col-span-full py-12 text-center">
+                    <div class="max-w-md mx-auto">
+                        <svg class="mx-auto h-12 w-12 text-zinc-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-zinc-900">No archived courses</h3>
+                        <p class="mt-1 text-zinc-500">Your archived courses will appear here.</p>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Completed Tab -->
+            @if (activeTab === 'completed') {
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                @for (enrollment of enrollmentsCompleted(); track enrollment) {
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-40 relative bg-cover bg-center bg-no-repeat"
+                        [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+
+                        <span
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full text-xs font-medium text-zinc-900">
+                            {{ enrollment.course.category.name }}
+                        </span>
+                        <span
+                            class="flex items-center justify-center absolute top-3 right-3 text-black text-2xl font-bold w-7.5 h-7.5 bg-white/85 rounded-full">
+                            ✓
+                        </span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-sm mb-1">By {{ enrollment.course.author }}</p>
+                        <p class="text-xs text-zinc-500 mb-4">Completed on {{ enrollment.completedAt | dateFormat:'date'
+                            }}</p>
+                        <div class="flex gap-2">
+                            <button [routerLink]="['/courses/', enrollment.course.id]"
+                                class="flex-1 text-sm text-zinc-800 font-medium py-2 px-4 border border-zinc-300 rounded hover:text-navy hover:border-slate-800 cursor-pointer transition duration-300">
+                                Review
+                            </button>
+                            <button
+                                class="flex-1 text-sm text-zinc-800 font-medium py-2 px-4 border border-slate-300 rounded hover:text-navy hover:border-slate-800 cursor-pointer transition duration-300">
+                                Certificate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                @if (enrollmentsCompleted().length === 0) {
+                <div class="col-span-full py-12 text-center">
+                    <div class="max-w-md mx-auto">
+                        <svg class="mx-auto h-12 w-12 text-zinc-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-[]">No completed courses</h3>
+                        <p class="mt-1 text-zinc-500">Your completed courses will appear here.</p>
+                        <button (click)="setActiveTab('courses')"
+                            class="text-white text-sm font-medium py-2 px-4 mt-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
+                            Find Courses
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,1 +1,86 @@
-<p>login works!</p>
+<div class="h-screen overflow-hiden">
+    <div class="flex flex-row justify-center h-full space-x-4">
+        <div class="w-1/2 ml-35 hidden xl:block">
+            <div class="flex flex-row gap-2 absolute top-10 left-10 text-7xl font-bold">
+                <p>
+                    <span
+                        class="bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-pink-400 to-pink-200 animate-gradient-x">
+                        IQ.
+                    </span>
+                </p>
+                @defer {
+                <a routerLink="/home" class="hover:scale-110 transition duration-300">
+                    <img src="{{ hostUrl }}/api/v1/files/smile-emoji-1.png" alt="" class="w-18 h-18" />
+                </a>
+                }
+            </div>
+            @defer {
+            <img src="{{ hostUrl }}/api/v1/files/iq-art-image.png" alt="" class="w-full h-full object-cover" />
+            }
+        </div>
+        <div class="flex flex-col justify-center items-center gap-10 w-1/2">
+            <div class="flex flex-row items-end justify-between gap-2 w-150">
+                <h3 class="text-2xl font-semibold">Sign in to continue</h3>
+                <p class="text-sm">
+                    Not a member yet?
+                    <a routerLink="/auth/register"
+                        class="underline font-bold text-black hover:cursor-pointer hover:text-[#444444] transition-colors duration-300">
+                        Register now
+                    </a>
+                </p>
+            </div>
+            <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && submit()" class="flex flex-col gap-4 w-150">
+
+                <div class="flex flex-col gap-2">
+                    <label for="username" class="text-sm text-[#555555aa]">USERNAME</label>
+                    <input type="text" placeholder="Username" formControlName="username"
+                        class="text-[#888888aa] bg-white border-b border-zinc-200 my-2 px-2 py-3 w-full outline-none focus:text-black focus:border-[#666666] transition duration-500"
+                        [ngClass]="{ 'text-black': loginForm.get('username')?.value }" />
+
+                    <label for="password" class="text-sm text-[#555555aa]">PASSWORD</label>
+                    <input type="password" placeholder="Password" formControlName="password"
+                        class="text-[#888888aa] bg-white border-b border-zinc-200 my-2 px-2 py-3 w-full outline-none focus:text-black focus:border-[#666666] transition duration-500"
+                        [ngClass]="{ 'text-black': loginForm.get('password')?.value }" />
+
+                    <div class="text-red-500 text-sm min-h-[1.25rem] my-1">
+                        @if (errorMessage) {
+                        <span>{{ errorMessage }}</span>
+                        }
+                    </div>
+
+                    <button type="submit"
+                        class="text-white text-xl bg-[#111111] w-full h-[4.5rem] py-2 rounded-md hover:bg-[#333333] cursor-pointer transition duration-300">
+                        @if (loading) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                            class="inline">
+                            <circle cx="18" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                            <circle cx="12" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                            <circle cx="6" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin="0" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                        </svg>
+                        } @else {
+                        Login in now
+                        }
+                    </button>
+                    <div class="my-2 text-sm text-black text-right">
+                        <a routerLink="/auth/forgot-password"
+                            class="underline hover:text-[#444444] cursor-pointer transition duration-300">Forgot your
+                            password?</a>
+                    </div>
+                </div>
+            </form>
+            <div class="min-w-[300px]"></div>
+        </div>
+    </div>
+</div>

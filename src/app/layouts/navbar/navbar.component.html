@@ -1,15 +1,69 @@
-<!DOCTYPE html>
-<nav class="flex flex-row items-center justify-center w-full h-16 px-[10%] text-[10pt] font-[500]">
-    <div class="flex flex-row items-center justify-center w-full h-full">
+<nav class="w-full h-16 bg-navy">
+    <div class="flex flex-row items-center justify-center max-w-[90rem] mx-auto h-full">
         <div class="flex flex-row gap-5 text-500 items-center justify-start w-full h-full">
-            <a routerLink="home" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Home</a>
-            <a routerLink="catalog" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Catalog</a>
-            <a routerLink="dashboard" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Dashboard</a>
-            <a routerLink="about" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">About</a>
+            <a routerLink="/home" class="hover:scale-105 transition duration-300 ">
+                <img src="{{ hostUrl }}/api/v1/files/academiq-logo.png" class="w-9 w-9"/>
+            </a>
+            <a routerLink="/home" class="text-sm text-[#f9f9f9] hover:cursor-pointer hover:scale-105">Home</a>
+            <a routerLink="/catalog" class="text-sm text-[#f9f9f9] hover:cursor-pointer hover:scale-105">Catalog</a>
+            <a routerLink="/users/dashboard" class="text-sm text-[#f9f9f9] hover:cursor-pointer hover:scale-105">Dashboard</a>
         </div>
+        @if (!authService.isLoggedIn()) {
         <div class="flex flex-row gap-5 items-center justify-end w-full h-full">
-            <a routerLink="auth/login" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Log in</a>
-            <a routerLink="auth/register" class="text-gray-700 hover:text-gray-900 hover:cursor-pointer">Register</a>
+            <button mat-button (click)="openLoginDialog()"
+                class="text-sm text-[#f9f9f9] hover:cursor-pointer hover:scale-105">Log in</button>
+            <button mat-button (click)="openRegisterDialog()"
+                class="text-sm text-[#f9f9f9] hover:cursor-pointer hover:scale-105">Sign up</button>
         </div>
+        } @else {
+        <div class="flex flex-row gap-5 items-center">
+            <p class="text-sm text-[#f9f9f9]">{{ user()?.username }}</p>
+            <div class="relative group inline-block">
+                <!-- Botón que activa el dropdown -->
+                <button>
+                    <figure class="text-[#f9f9f9] w-10 h-10 border-1 rounded-full overflow-hidden">
+                        @defer {
+                        <img src="{{ user()?.avatarUrl }}" alt="" class="w-10 h-10" />
+                        } @loading {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            class="animate-spin-slow">
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                                <path fill="currentColor"
+                                    d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12"
+                                    opacity="0.1" />
+                                <path fill="currentColor"
+                                    d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3" />
+                            </g>
+                        </svg>
+                        }
+                    </figure>
+                </button>
+
+                <!-- Dropdown (oculto por defecto) -->
+                <div class="absolute right-0 mt-2 w-55 origin-top-left scale-95 opacity-0 invisible
+                                group-hover:scale-100 group-hover:opacity-100 group-hover:visible
+                                transition-all duration-200 transform-gpu z-50">
+                    <div class="bg-[#444444]  shadow-lg rounded-md py-1">
+                        <div class="px-4 py-2 mb-1 text-sm text-[#f9f9f9] ">
+                            <p class="py-1">{{ user()?.firstname }} {{ user()?.lastname }}</p>
+                            <a routerLink="/users/profile/edit"
+                                class="text-xs text-blue-200 hover:text-blue-300 cursor-pointer transition duration-300">Edit
+                                profile</a>
+                        </div>
+                        <div class="border-t border-[#666666]"></div>
+                        <a routerLink="/users/profile"
+                            class="block px-4 py-2 text-sm text-[#f9f9f9]  hover:bg-[#555555] cursor-pointer">Profile: <span class="text-sm text-blue-200">Public</span></a>
+                        <a routerLink="/help"
+                            class="block px-4 py-2 text-sm text-[#f9f9f9]  hover:bg-[#555555] cursor-pointer">Help</a>
+                        <div class="border-t border-[#666666]"></div>
+                        <a (click)="logout()"
+                            class="block px-4 py-2 text-sm text-[#f9f9f9]  hover:bg-[#555555] cursor-pointer">Log out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
     </div>
 </nav>

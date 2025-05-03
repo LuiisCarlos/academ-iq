@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
 import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { FooterComponent } from './layouts/footer/footer.component';
+import { LayoutService } from './core/services/config/layout.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,15 @@ import { FooterComponent } from './layouts/footer/footer.component';
   ]
 })
 export class AppComponent {
+  private readonly layoutService: LayoutService = inject(LayoutService);
+
   title = 'Academ-IQ';
-  showNavbar = true;
-  showFooter = true;
+  showLayout = true;
+
+  constructor() {
+    this.layoutService.showLayout$.subscribe((visible) => {
+      this.showLayout = visible;
+    });
+  }
+
 }

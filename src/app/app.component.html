@@ -1,8 +1,13 @@
-<!DOCTYPE html>
-@if (showNavbar) {
-  <header><app-navbar /></header>
+@if (showLayout) {
+  <header>
+    <app-navbar />
+  </header>
 }
-<main><router-outlet /></main>
-@if (showFooter) {
-  <footer><app-footer /></footer>
+<main>
+  <router-outlet />
+</main>
+@if (showLayout) {
+  <footer>
+    <app-footer />
+  </footer>
 }
