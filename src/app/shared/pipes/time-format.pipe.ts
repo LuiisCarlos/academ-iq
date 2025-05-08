@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'formatStringToTime',
+  name: 'timeFormat',
   standalone: true
 })
-export class FormatStringToTimePipe implements PipeTransform {
+export class TimeFormatPipe implements PipeTransform {
   transform(value: string, format: 'short' | 'long' | 'custom' = 'short', customFormat?: string): string {
     if (!value) return '';
 
@@ -49,7 +49,7 @@ export class FormatStringToTimePipe implements PipeTransform {
     return format
       .replace('H', hours.toString())
       .replace('M', minutes.toString())
-      .replace('Hours', hours.toString())
-      .replace('Minutes', minutes.toString())
+      .replace('Hours', `Hour${hours !== 1 ? 's' : ''}`)
+      .replace('Minutes', `Minute${minutes !== 1 ? 's' : ''}`)
   }
 }

@@ -26,14 +26,15 @@
     --color-navy-800: #070B14;
     --color-navy-900: #05080F;
     --color-navy-950: #03050A;
+
 }
 
 body {
     font-family: 'Inter Tight', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #fcfcfc;
-    color: #333;
+    background-color: #ffffff;
+    color: #000000;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
