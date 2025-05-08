@@ -21,19 +21,19 @@
 
         <!-- Tab Content -->
         <div class="tab-content">
-            <!-- Courses Tab -->
             @if (activeTab === 'courses') {
             <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @for (enrollment of enrollmentsActive(); track enrollment) {
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
-                        [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+                        [style.backgroundImage]="`url(${enrollment.course.thumbnailUrl})`">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover: cursor-pointer"></div>
 
                         <span
                             class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full text-xs font-medium text-zinc-900">
                             {{ enrollment.course.category.name }}
                         </span>
+
                         @if (enrollment.isFavorite) {
                         <button (click)="setIsFavorite(enrollment.course.id, false)"
                             class="absolute top-3 right-12 bg-white/85 w-7.5 h-7.5 rounded-full flex items-center justify-center text-black hover:text-pink-600 hover:bg-white/95 hover:scale-110 cursor-pointer transition">
@@ -51,6 +51,7 @@
                             </svg>
                         </button>
                         }
+
                         <button (click)="setIsArchived(enrollment.course.id, true)"
                             class="absolute top-3 right-3 bg-white/85 w-7.5 h-7.5 rounded-full flex items-center justify-center text-black hover:text-pink-600 hover:bg-white/95 hover:scale-110 cursor-pointer transition">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
@@ -230,7 +231,7 @@
                                 class="flex-1 text-sm text-zinc-800 font-medium py-2 px-4 border border-zinc-300 rounded hover:text-navy hover:border-slate-800 cursor-pointer transition duration-300">
                                 Review
                             </button>
-                            <button
+                            <button (click)="downloadCert(enrollment)"
                                 class="flex-1 text-sm text-zinc-800 font-medium py-2 px-4 border border-slate-300 rounded hover:text-navy hover:border-slate-800 cursor-pointer transition duration-300">
                                 Certificate
                             </button>

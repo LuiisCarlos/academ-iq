@@ -1,5 +1,5 @@
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Component, HostListener, inject, Signal } from '@angular/core';
+import { Component, HostListener, inject, input, Signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { ForgotPasswordDialogComponent } from '../../features/auth/forgot-password-dialog/forgot-password-dialog.component';

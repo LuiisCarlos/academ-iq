@@ -1,33 +1,33 @@
-<div class="text-black bottom-0 left-0 right-0 w-full z-10 mt-50 pt-10 bg-navy">
+<div class="text-black bottom-0 left-0 right-0 w-full z-10 pt-10 bg-navy-700">
     <div class="max-w-[90rem] mx-auto text-[#f9f9f9]">
-        <p class="text-xl font-bold px-5">IQ.</p>
+        <a [routerLink]="['/home']" class="text-xl font-bold px-5 text-white">IQ.</a>
         <div class="flex flex-row gap-10 text-sm pt-10 pb-20">
             <div class="flex flex-col gap-5 px-5">
-                <a [routerLink]="['/home']" class="font-medium hover:cursor-pointer hover:scale-105">Home</a>
-                <a [routerLink]="['/about']" class="font-medium hover:cursor-pointer hover:scale-105">About us</a>
-                <a [routerLink]="['/catalog']" class="font-medium hover:cursor-pointer hover:scale-105">Catalog</a>
+                <a [routerLink]="['/home']" class="font-medium hover:cursor-pointer text-white/90 hover:text-white">Home</a>
+                <a [routerLink]="['/about']" class="font-medium hover:cursor-pointer text-white/90 hover:text-white">About us</a>
+                <a [routerLink]="['/catalog']" class="font-medium hover:cursor-pointer text-white/90 hover:text-white">Catalog</a>
             </div>
             <div class="flex flex-col gap-5 px-5">
-                <a class="font-medium hover:cursor-pointer hover:scale-105">Bebesita</a>
-                <a class="font-medium hover:cursor-pointer hover:scale-105">Bebe</a>
-                <a class="font-medium hover cursor-pointer hover:scale-105">Lean</a>
+                <a class="font-medium hover:cursor-pointer text-white/90 hover:text-white">Bebesita</a>
+                <a class="font-medium hover:cursor-pointer text-white/90 hover:text-white">Bebe</a>
+                <a class="font-medium hover:cursor-pointer text-white/90 hover:text-white">Lean</a>
             </div>
             <div class="flex flex-col gap-5 px-5">
-                <a [routerLink]="['/help']" class="font-medium hover:cursor-pointer hover:scale-105">Help</a>
+                <a [routerLink]="['/help']" class="font-medium hover:cursor-pointer text-white/90 hover:text-white">Help</a>
             </div>
         </div>
         <hr class="border-t-3 border-dotted border-[#f9f9f9]" />
         <div class="flex flex-row items-left justify-between w-full h-16 overflow-hidden px-5 py-15">
             <div class="flex items-center gap-5 font-semibold">
                 <figure class="zincscale transition duration-300 hover:scale-110">
-                    <a href="https://github.com/LuiisCarlos" target="_blank">
+                    <a [routerLink]="['/home']">
                         <img src="http://localhost:8888/api/v1/files/academiq-logo.png" alt="IQ. Logo" class="size-8" />
                     </a>
                 </figure>
                 <p>Copyright © 2025</p>
             </div>
             <div class="flex flex-row gap-5 items-center justify-end">
-                <figure class="filter transition duration-300 hover:scale-110">
+                <figure class="hover:scale-110 transition">
                     <a href="https://github.com/LuiisCarlos" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
                             <path fill="currentColor"
@@ -35,7 +35,7 @@
                         </svg>
                     </a>
                 </figure>
-                <figure class="filter transition duration-300 hover:scale-110">
+                <figure class="hover:scale-110 transition">
                     <a href="https://github.com/LuiisCarlos" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                             <path fill="currentColor"
@@ -43,7 +43,7 @@
                         </svg>
                     </a>
                 </figure>
-                <figure class="filter transition duration-300 hover:scale-110">
+                <figure class="hover:scale-110 transition">
                     <a href="https://github.com/LuiisCarlos" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
                         </svg>
                     </a>
                 </figure>
-                <figure class="filter transition duration-300 hover:scale-110">
+                <figure class="hover:scale-110 transition">
                     <a href="https://github.com/LuiisCarlos" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
                             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -63,7 +63,7 @@
                         </svg>
                     </a>
                 </figure>
-                <figure class="filter transition duration-300 hover:scale-110">
+                <figure class="hover:scale-110 transition">
                     <a href="https://github.com/LuiisCarlos" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                             <path fill="currentColor"

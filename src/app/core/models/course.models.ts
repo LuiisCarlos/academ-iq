@@ -44,6 +44,18 @@ export interface File {
 }
 
 export interface Category {
-    id   : number,
-    name : string
+    id               : number,
+    name             : string,
+    svg              : string,
+    color            : string,
+    shortDescription : string,
+    longDescription  : string,
+    benefits         : Benefit[]
+}
+
+export interface Benefit {
+    id       : number,
+    title    : string,
+    subtitle : string,
+    svg      : string,
 }

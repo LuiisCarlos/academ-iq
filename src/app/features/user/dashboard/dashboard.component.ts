@@ -1,10 +1,12 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
-import { UserService } from '../../../core/services/user.service';
 import { Enrollment } from '../../../core/models/user.models';
-import { EnrollmentService } from '../../../core/services/enrollment.service';
+import { EnrollmentService } from '../../../core/services/course/enrollment.service';
+import { CertificateService } from '../../../core/services/course/certificate.service';
+import { AuthService } from '../../../core/services/auth/auth.service';
+import { UserDetails } from '../../../core/models/auth.models';
 
 interface Tab {
   id    : string;
@@ -21,14 +23,19 @@ interface Tab {
   ]
 })
 export class DashboardComponent {
-  private readonly enrollmentService : EnrollmentService = inject(EnrollmentService);
+  private readonly enrollment  : EnrollmentService  = inject(EnrollmentService);
+  private readonly certificate : CertificateService = inject(CertificateService);
+  private readonly auth        : AuthService        = inject(AuthService);
 
   enrollments: WritableSignal<Enrollment[]>  = signal<Enrollment[]>([]);
-  enrollmentsActive    = computed(() => this.enrollments().filter(e => (!e.isArchived && !e.isCompleted) || (!e.isArchived && e.isFavorite)));
+  enrollmentsActive    = computed(() => this.enrollments().filter(e => (!e.isArchived && !e.isCompleted) || (!e.isArchived && !e.isCompleted && e.isFavorite)));
   enrollmentsCompleted = computed(() => this.enrollments().filter(e => e.isCompleted));
-  enrollmentsFavorites = computed(() => this.enrollments().filter(e => e.isFavorite));
+  enrollmentsFavorites = computed(() => this.enrollments().filter(e => e.isFavorite && !e.isArchived));
   enrollmentsArchived  = computed(() => this.enrollments().filter(e => e.isArchived));
+  user: Signal<UserDetails | null> = this.auth.user;
   activeTab: string = 'courses';
+  loading = signal(false);
+  error = signal(false);
   tabs: Tab[] = [
     { id: 'courses',   label: 'Courses'   },
     { id: 'favorites', label: 'Favorites' },
@@ -41,26 +48,49 @@ export class DashboardComponent {
   }
 
   private loadData() {
-    this.enrollmentService.findAll().subscribe({
+    this.enrollment.findAll().subscribe({
       next: (response) => {
         this.enrollments.set(response);
-        console.log(response);
       }
     })
   }
 
-  setIsFavorite(enrollmentId: number, isFavorite: boolean) {
-    this.enrollmentService.updateFavorite(enrollmentId, isFavorite).subscribe({
-      next: () => {
-        this.loadData();
+  downloadCert(enrollment: Enrollment) {
+    if (!enrollment.isCompleted)
+      return;
+
+    this.loading.set(true);
+    this.error.set(false);
+
+    const certificateData = {
+      userName   : this.user()?.firstname! + ' ' + this.user()?.lastname!,
+      userDni    : this.user()?.dni!,
+      enrollment : enrollment
+    };
+
+    this.certificate.generate(certificateData);
+
+    this.loading.set(false);
+
+    // reaccionar cuando el PDF esté listo ?
+  }
+
+  setIsFavorite(courseId: number, isFavorite: boolean) {
+    this.enrollment.patchFavorite(courseId, isFavorite).subscribe({
+      next: (response) => {
+        this.enrollments.update((current) =>
+          current.map(e => e.course.id === courseId ? response : e)
+        );
       }
     });
   }
 
-  setIsArchived(enrollmentId: number, isArchived: boolean) {
-    this.enrollmentService.updateArchived(enrollmentId, isArchived).subscribe({
-      next: () => {
-        this.loadData();
+  setIsArchived(courseId: number, isArchived: boolean) {
+    this.enrollment.patchArchived(courseId, isArchived).subscribe({
+      next: (response) => {
+        this.enrollments.update((current) =>
+          current.map(e => e.course.id === courseId ? response : e)
+        );
       }
     });
   }

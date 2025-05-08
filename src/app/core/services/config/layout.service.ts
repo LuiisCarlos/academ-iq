@@ -8,11 +8,12 @@ export class LayoutService {
   private showLayoutSubject = new BehaviorSubject<boolean>(true);
   showLayout$ = this.showLayoutSubject.asObservable();
 
-  showLayout() {
+  show() {
     this.showLayoutSubject.next(true);
   }
 
-  hideLayout() {
+  hide() {
     this.showLayoutSubject.next(false);
   }
+
 }
