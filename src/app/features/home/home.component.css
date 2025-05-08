@@ -9,12 +9,12 @@
 }
 
 .scroll-left {
-    animation: infinite-scroll-left 30s linear infinite;
+    animation: infinite-scroll-left 50s linear infinite;
     animation-play-state: running;
 }
 
 .scroll-right {
-    animation: infinite-scroll-right 10s linear infinite;
+    animation: infinite-scroll-right 30s linear infinite;
     animation-play-state: running;
 }
 
