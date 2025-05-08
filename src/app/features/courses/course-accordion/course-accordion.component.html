@@ -27,7 +27,7 @@
                     lessons</span>
                 <span class="text-sm font-medium px-2 bg-pink-50 py-1 rounded-full" [class.text-navy]="onPlayer()"
                     [class.text-xs]="onPlayer()" [class.text-pink-600]="!onPlayer()" [class.bg-zinc-100]="onPlayer()">
-                    {{ section.duration | formatStringToTime }}
+                    {{ section.duration | timeFormat }}
                 </span>
             </div>
         </button>

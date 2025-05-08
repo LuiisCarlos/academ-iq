@@ -1,11 +1,12 @@
 <div class="min-h-screen max-w-[90rem] mx-auto">
-    <div class="flex flex-col md:flex-row gap-6 py-6">
+    <div class="flex flex-col md:flex-row gap-6 p-6">
         <!-- Filters Sidebar -->
         <div class="bg-white rounded-lg shadow-sm border border-zinc-100 w-full md:w-64 p-4 h-fit">
             <button (click)="resetFilters()"
                 class="bg-zinc-50 text-navy text-sm rounded-lg w-full h-9 px-3 flex items-center justify-center gap-2 hover:bg-zinc-100 cursor-pointer transition-colors duration-300 mb-4 group">
                 <span>Reset filters</span>
-                <svg width="15" height="16" viewBox="0 0 15 16" class="text-navy group-hover:rotate-360 transition duration-400">
+                <svg width="15" height="16" viewBox="0 0 15 16"
+                    class="text-navy group-hover:rotate-360 transition duration-400">
                     <path fill="currentColor"
                         d="M9.54947 0H4.63158C2.08842 0 0 2.07158 0 4.63158V8.67368C0 9.04421 0.303158 9.34737 0.673684 9.34737C1.04421 9.34737 1.34737 9.04421 1.34737 8.67368V4.63158C1.34737 2.82947 2.81263 1.36421 4.61474 1.36421H9.51579C11.3516 1.36421 12.8168 2.82947 12.8168 4.63158V8.16842C12.8168 9.97053 11.3516 11.4358 9.54947 11.4358H3.46947L5.50737 9.39789C5.77684 9.12842 5.77684 8.70737 5.50737 8.43789C5.23789 8.16842 4.81684 8.16842 4.54737 8.43789L1.34737 11.6379C1.07789 11.9074 1.07789 12.3284 1.34737 12.5979L4.54737 15.7979C4.68211 15.9326 4.85053 16 5.03579 16C5.20421 16 5.38947 15.9326 5.52421 15.7979C5.79368 15.5284 5.79368 15.1074 5.52421 14.8379L3.46947 12.8H9.54947C12.1095 12.8 14.1811 10.7284 14.1811 8.16842V4.63158C14.1811 2.07158 12.0926 0 9.54947 0Z">
                     </path>
@@ -41,6 +42,30 @@
                     <span class="ms-2 text-sm text-navy">{{ category.name }}</span>
                 </label>
                 }
+            </div>
+
+            <div class="bg-zinc-50 rounded-lg p-3 mb-4">
+                <p class="font-medium text-navy mb-2">Duration</p>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">0-1 Hour</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">0-3 Hours</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">3-6 Hours</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">6-17 Hours</span>
+                </label>
             </div>
 
             <!-- Rating Filter -->
@@ -94,7 +119,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>{{ course.duration | formatStringToTime:'short' }}</span>
+                                <span>{{ course.duration | timeFormat:'short' }}</span>
                             </div>
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
@@ -153,6 +178,14 @@
                 </div>
                 }
             </div>
+            @if (filteredCourses.length > pageSize()) {
+            <div class="mt-10">
+                <mat-paginator (page)="handlePageEvent($event)" [length]="courses().length" [pageSize]="pageSize"
+                    [showFirstLastButtons]="false" [pageSizeOptions]="pageSizeOptions()" [hidePageSize]="true"
+                    [pageIndex]="pageIndex" aria-label="Select page">
+                </mat-paginator>
+            </div>
+            }
             } @else {
             <div class="flex flex-col items-center justify-center h-[60vh] text-center">
                 <div class="w-20 h-20 text-navy mb-4 animate-rotate-y animate-infinite animate-duration-[4000ms]">

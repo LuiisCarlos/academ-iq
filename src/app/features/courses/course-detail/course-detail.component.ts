@@ -3,15 +3,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { CourseAccordionComponent } from '../course-accordion/course-accordion.component';
-import { FormatStringToTimePipe } from '../../../shared/pipes/format-string-to-time.pipe';
+import { EnrollmentService } from '../../../core/services/course/enrollment.service';
+import { CourseService } from '../../../core/services/course/course.service';
 import { RatingStatsPipe } from '../../../shared/pipes/rating-stats.pipe';
-import { CourseService } from '../../../core/services/course.service';
+import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
+import { AuthService } from '../../../core/services/auth/auth.service';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
-import { UserService } from '../../../core/services/user.service';
 import { Enrollment } from '../../../core/models/user.models';
 import { Course } from '../../../core/models/course.models';
-import { EnrollmentService } from '../../../core/services/enrollment.service';
-import { AuthService } from '../../../core/services/auth/auth.service';
 
 interface Tab {
   id    : string;
@@ -23,10 +22,9 @@ interface Tab {
   templateUrl : './course-detail.component.html',
   styleUrl    : './course-detail.component.css',
   imports     : [
-    RouterLink,
     TimeAgoPipe,
     CommonModule,
-    FormatStringToTimePipe,
+    TimeFormatPipe,
     CourseAccordionComponent
   ]
 })
@@ -38,8 +36,8 @@ export class CourseDetailComponent {
   private readonly router            : Router            = inject(Router);
 
   showAllComments    : WritableSignal<boolean> = signal(false);
-  course             : Course     = { } as Course;
-  enrollment         : Enrollment = { } as Enrollment;
+  course             : Course            = { } as Course;
+  enrollment         : Enrollment | null = null;
   maxVisibleComments : number     = 3;
   activeTab          : string     = 'sections';
   tabs: Tab[] = [
@@ -81,17 +79,27 @@ export class CourseDetailComponent {
     this.showAllComments.update(value => !value);
   }
 
-  setIsFavorite(enrollmentId: number, isFavorite: boolean) {
+  setIsFavorite(courseId: number, isFavorite: boolean) {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/auth/login']);
       return;
     }
 
-    this.enrollmentService.updateFavorite(enrollmentId, isFavorite).subscribe({
-      next: () => {
-        this.loadData(this.course.id);
+    this.enrollmentService.patchFavorite(courseId, isFavorite).subscribe({
+      next: (response) => {
+        this.enrollment = response;
+      },
+      error: () => {
+        this.enrollUser(courseId, true);
       }
     });
+  }
+
+  enrollUser(courseId: number, isFavorite?: boolean) {
+    if (this.enrollment === null)
+      this.enrollmentService.saveByCourseId(courseId, isFavorite).subscribe();
+
+    this.router.navigate(['/courses/watch/', courseId]);
   }
 
   setActiveTab(tab: string) {

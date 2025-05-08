@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 
-import { FormatStringToTimePipe } from '../../../shared/pipes/format-string-to-time.pipe';
+import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { Course } from '../../../core/models/course.models';
 
 @Component({
@@ -19,7 +19,7 @@ import { Course } from '../../../core/models/course.models';
   imports     : [
     RouterLink,
     RouterModule,
-    FormatStringToTimePipe
+    TimeFormatPipe
   ]
 })
 export class CourseAccordionComponent {

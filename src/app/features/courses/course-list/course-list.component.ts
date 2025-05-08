@@ -1,14 +1,15 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { FormatStringToTimePipe } from '../../../shared/pipes/format-string-to-time.pipe';
+import { EnrollmentService } from '../../../core/services/course/enrollment.service';
+import { CourseService } from '../../../core/services/course/course.service';
+import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { CourseService } from '../../../core/services/course.service';
 import { Category, Course } from '../../../core/models/course.models';
 import { Enrollment } from '../../../core/models/user.models';
-import { EnrollmentService } from '../../../core/services/enrollment.service';
 
 @Component({
   selector    : 'app-course-list',
@@ -18,21 +19,25 @@ import { EnrollmentService } from '../../../core/services/enrollment.service';
     RouterLink,
     FormsModule,
     CommonModule,
-    FormatStringToTimePipe
-  ]
+    TimeFormatPipe,
+    MatPaginatorModule
+  ],
 })
 export class CourseListComponent {
-  private readonly enrollmentService: EnrollmentService = inject(EnrollmentService);
-  private readonly courseService : CourseService = inject(CourseService);
-  private readonly authService   : AuthService   = inject(AuthService);
+  private readonly enrollmentService : EnrollmentService = inject(EnrollmentService);
+  private readonly courseService     : CourseService     = inject(CourseService);
+  private readonly authService       : AuthService       = inject(AuthService);
   private readonly router: Router = inject(Router);
 
   courses       : WritableSignal<Course[]>     = signal<Course[]>([]);
   categories    : WritableSignal<Category[]>   = signal<Category[]>([]);
-  enrollments   : WritableSignal<Enrollment[]> = signal<Enrollment[]> ([]);
+  enrollments   : WritableSignal<Enrollment[]> = signal<Enrollment[]>([]);
   levels        : string[] = ['Beginner', 'Intermediate', 'Advanced'];
   currentRating : number   = 0;
   hoverRating   : number   = 0;
+  pageSize = signal(24);
+  pageIndex = signal(0);
+  pageSizeOptions = signal([24]);
   filters = {
     title      : '',
     levels     : {} as {[key: string]: boolean},
@@ -75,23 +80,38 @@ export class CourseListComponent {
       key => this.filters.levels[key]
     );
 
+    const startIndex = this.pageIndex() * this.pageSize();
+
     return this.courses().filter(course =>
       course.title.toLowerCase().includes(this.filters.title.toLowerCase()) &&
       (selectedCategories.length === 0 || selectedCategories.includes(course.category.name)) &&
       (selectedLevels.length === 0 || selectedLevels.includes(course.level)) &&
-      (this.filters.rating === 0 || (this.filters.rating >= course.averageRating - 1 && this.filters.rating < course.averageRating))
-    );
+      (this.filters.rating === 0 || (this.filters.rating > course.averageRating))
+    ).slice(startIndex, startIndex + this.pageSize());
+  }
+
+  handlePageEvent(event: PageEvent) {
+    this.pageSize.set(event.pageSize);
+    this.pageIndex.set(event.pageIndex)
+    this.scrollToTop();
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 
   isFavorite(courseId: number): boolean {
     if (!this.authService.isLoggedIn()) return false;
-    const enrollment = this.enrollments().find(e => e.course.id === courseId);
+    const enrollment = this.enrollments().find(e => e.course!.id === courseId);
     return enrollment?.isFavorite || false;
   }
 
   resetFilters() {
     this.filters = {
-      title       : '',
+      title      : '',
       levels     : {},
       categories : {},
       rating     : 0,
@@ -106,15 +126,17 @@ export class CourseListComponent {
     this.hoverRating = 0;
   }
 
-  setIsFavorite(enrollmentId: number, isFavorite: boolean) {
+  setIsFavorite(courseId: number, isFavorite: boolean) {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/auth/login']);
       return;
     }
 
-    this.enrollmentService.updateFavorite(enrollmentId, isFavorite).subscribe({
-      next: () => {
-        this.loadData();
+    this.enrollmentService.patchFavorite(courseId, isFavorite).subscribe({
+      next: (response) => {
+        this.enrollments.update((current) =>
+          current.map(e => e.course.id === courseId ? response : e)
+        );
       }
     });
   }
