@@ -1,7 +1,6 @@
 <!-- profile.component.html -->
-<div class="min-h-screen py-6 px-4">
-    <div class="max-w-3xl mx-auto">
-
+<div class="min-h-screen p-6">
+    <section class="max-w-3xl mx-auto">
         <!-- Header Section -->
         <header class="flex flex-col items-center justify-center gap-5 mb-12">
             <div class="relative w-28 h-28 rounded-full p-1 bg-pink-600 shadow-md">
@@ -123,42 +122,191 @@
                 </div>
             </div>
         </div>
+    </section>
 
-        <!--
-        <div class="bg-white rounded-xl shadow-sm border border-zinc-100 overflow-hidden p-6">
-            <h2 class="text-lg font-semibold text-navy-800 mb-4">Recent Activity</h2>
-            <div class="space-y-4">
-                @for (activity of recentActivities(); track activity.id) {
-                <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0 mt-1">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center"
-                             [class.bg-blue-100]="activity.type === 'course'"
-                             [class.bg-purple-100]="activity.type === 'certificate'"
-                             [class.bg-pink-100]="activity.type === 'achievement'">
-                            <svg class="w-4 h-4"
-                                 [class.text-blue-500]="activity.type === 'course'"
-                                 [class.text-purple-500]="activity.type === 'certificate'"
-                                 [class.text-pink-500]="activity.type === 'achievement'"
-                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                @if (activity.type === 'course') {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                }
-                                @if (activity.type === 'certificate') {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                }
-                                @if (activity.type === 'achievement') {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                                }
+    <section class="max-w-[90rem] mx-auto px-6 py-12 min-h-200">
+        <!-- Header with Search -->
+        <header class="mb-10">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-navy mb-2">Your Certificates</h1>
+                    <p class="text-zinc-600">View and download your completed course certificates</p>
+                </div>
+
+                <div class="relative w-full md:w-80">
+                    <input type="text" [(ngModel)]="searchQuery" (input)="filterCertificates()"
+                        placeholder="Search certificates..."
+                        class="w-full pl-10 pr-4 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-zinc-400 absolute left-3 top-2.5"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- Certificates Grid -->
+        <main>
+            @if(filteredEnrollments.length > 0) {
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                @for(enrollment of filteredEnrollments; track $index) {
+                <div
+                    class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col h-full overflow-hidden">
+                    <!-- Certificate Header -->
+                    <div class="bg-gradient-to-tl from-navy via-navy-800 to-pink-500 p-5 text-center">
+                        <div
+                            class="inline-flex items-center justify-center w-14 h-14 bg-white/20 rounded-full backdrop-blur-sm mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                class="text-white">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    [attr.d]="enrollment.course.category.svg" />
                             </svg>
                         </div>
+                        <h3 class="text-white font-bold text-lg">Certificate</h3>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-zinc-800">{{ activity.description }}</p>
-                        <p class="text-xs text-zinc-500 mt-1">{{ activity.date | dateFormat:'custom3' }}</p>
+
+                    <!-- Certificate Content -->
+                    <div class="p-6 flex-grow flex flex-col">
+                        <div class="mb-4">
+                            <h2 class="text-xl font-bold text-navy-800 mb-1">{{ enrollment.course.title }}</h2>
+                            <p class="text-gray-500 text-sm">
+                                Issued on
+                                {{ enrollment.completedAt | dateFormat:'custom4' }}
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 mb-6 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Duration:</span>
+                                <span class="font-medium text-navy-800">{{ enrollment.course.duration |
+                                    timeFormat:'custom':'H Hours' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Category:</span>
+                                <span class="font-medium text-navy-800">{{ enrollment.course.category.name }}</span>
+                            </div>
+                            <!-- <div class="flex justify-between">
+                                <span class="text-gray-600">Score:</span>
+                                <span class="font-medium text-navy-800">{{ enrollment.finalScore || '--' }}/100</span>
+                            </div> -->
+                        </div>
+
+                        <button (click)="downloadCert(enrollment)"
+                            class="mt-auto w-full flex items-center justify-center border border-navy text-navy py-2.5 px-4 rounded-lg font-medium hover:bg-navy/10 cursor-pointer transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Download
+                        </button>
                     </div>
                 </div>
                 }
             </div>
-        </div>-->
-    </div>
+            } @else {
+                <div class="col-span-full py-12 text-center">
+                    <div class="flex flex-col justify-center items-center">
+                        <div class="w-20 h-20 text-navy mb-4 animate-rotate-y animate-infinite animate-duration-[4000ms]">
+                            <svg xmls="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <g fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1.5"
+                                        d="M9 17c.85-.63 1.885-1 3-1s2.15.37 3 1" />
+                                    <ellipse cx="15" cy="10.5" fill="currentColor" rx="1" ry="1.5" />
+                                    <ellipse cx="9" cy="10.5" fill="currentColor" rx="1" ry="1.5" />
+                                </g>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-medium text-navy mb-2">No certificates found</h3>
+                        <p class="text-zinc-600">Try adjusting your search or complete a course to earn certificates.</p>
+                    </div>
+                </div>
+            }
+        </main>
+    </section>
 </div>
+
+
+
+
+
+
+<!-- <div
+    class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 max-w-md mx-auto">
+
+    <div class="bg-gradient-to-r from-navy-600 to-navy-500 p-6 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full backdrop-blur-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+        </div>
+        <h3 class="mt-4 text-xl font-bold text-white">Certificado de Finalización</h3>
+    </div>
+
+
+    <div class="p-6">
+        <div class="flex justify-between items-start mb-4">
+            <div>
+                <h4 class="font-bold text-navy-800 text-lg">{{ courseTitle }}</h4>
+                <p class="text-sm text-gray-500">Completado el: {{ completionDate }}</p>
+            </div>
+            <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd" />
+                </svg>
+                Completado
+            </span>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
+            <div>
+                <p class="text-sm text-gray-500">Instructor</p>
+                <p class="font-medium text-navy-700">{{ instructorName }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Duración</p>
+                <p class="font-medium text-navy-700">{{ courseDuration }} horas</p>
+            </div>
+        </div>
+
+        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+            <p class="text-sm text-gray-600 mb-2">Código de verificación:</p>
+            <div class="flex items-center justify-between bg-white p-3 rounded border border-gray-200">
+                <code class="font-mono text-sm text-navy-800">{{ verificationCode }}</code>
+                <button (click)="copyToClipboard()" class="text-navy-600 hover:text-navy-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                        <path
+                            d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-sm text-gray-600 text-center sm:text-left">
+                Este certificado acredita la finalización exitosa del curso.
+            </p>
+            <button (click)="downloadCertificate()"
+                class="flex items-center justify-center px-6 py-2 bg-gradient-to-r from-navy-600 to-navy-500 text-white rounded-lg hover:from-navy-700 hover:to-navy-600 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                        clip-rule="evenodd" />
+                </svg>
+                Descargar Certificado
+            </button>
+        </div>
+    </div>
+</div> -->

@@ -26,12 +26,11 @@
 
         <!-- Contenido principal -->
         <div class="flex-1 bg-white rounded-xl shadow-sm p-8">
-            <!-- Sección Profile -->
             @if (activeTab === 'profile') {
             <div class="space-y-8">
-                <div>
+                <form>
                     <h2 class="text-2xl font-light text-navy-800 mb-6">Profile Avatar</h2>
-                    <div class="flex items-center gap-6">
+                    <div class="flex items-center justify-center gap-6">
                         <div class="relative">
                             <!-- Avatar actual -->
                             <img [src]="avatarPreview || user()?.avatarUrl" alt="Avatar"
@@ -56,7 +55,7 @@
 
                         <!-- Botón secundario para abrir el selector -->
                         <button (click)="fileInput.click()"
-                            class="text-zinc-800 border border-slate-300 px-6 py-2 rounded-md hover:text-navy hover:border-slate-800 cursor-pointer transition duration-300">
+                            class="text-navy border border-navy px-6 py-2 rounded-md hover:bg-navy-800/10 cursor-pointer transition duration-300">
                             Change Avatar
                         </button>
                     </div>
@@ -65,7 +64,7 @@
                     @if (errorMessage) {
                     <p class="mt-2 text-sm text-red-500">{{ errorMessage }}</p>
                     }
-                </div>
+                </form>
 
                 <form [formGroup]="userInfoForm" (ngSubmit)="userInfoForm.valid && submit()" class="space-y-6">
                     <h2 class="text-2xl font-light text-navy-800">Profile Information</h2>
@@ -270,7 +269,7 @@
             <div class="space-y-8">
                 <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordForm.valid && submit()"
                     class="space-y-6">
-                    <h2 class="text-2xl font-light text-navy-800">Change Password</h2>
+                    <h2 class="text-2xl font-light text-navy">Change Password</h2>
 
                     <div class="space-y-4">
                         <div>

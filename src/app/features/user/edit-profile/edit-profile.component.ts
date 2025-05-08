@@ -4,7 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 
 import { passwordsMatchValidator } from '../../../shared/validators/match-password.validator';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { CourseService } from '../../../core/services/course.service';
+import { CourseService } from '../../../core/services/course/course.service';
 import { changePasswordDto } from '../../../core/models/user.models';
 import { UserService } from '../../../core/services/user.service';
 import { UserDetails } from '../../../core/models/auth.models';
