@@ -42,11 +42,11 @@ export class ForgotPasswordDialogComponent {
     this.loading = true;
     this.authService.recoverPassword(email as string).subscribe({
       next: () => {
-        this.dialogRef.close()
+        //this.dialogRef.close()
+        this.successMessage = 'An email has been sent. Check your mailbox to reset your password.'
       },
       error: () => {
         this.errorMessage = 'Oops! An unexpected error occurred. Please try again later.';
-        this.loading = false;
       },
       complete: () => {
         this.loading = false;

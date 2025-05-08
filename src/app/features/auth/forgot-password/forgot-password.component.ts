@@ -19,12 +19,12 @@ import { ConfigService } from '../../../core/services/config/config.service';
   ]
 })
 export class ForgotPasswordComponent implements OnDestroy {
-  private readonly layoutService : LayoutService = inject(LayoutService);
-  private readonly authService   : AuthService   = inject(AuthService);
-  private readonly configService : ConfigService = inject(ConfigService);
-  private readonly location      : Location      = inject(Location);
+  private readonly layout   : LayoutService = inject(LayoutService);
+  private readonly auth     : AuthService   = inject(AuthService);
+  private readonly config   : ConfigService = inject(ConfigService);
+  private readonly location : Location      = inject(Location);
 
-  protected readonly hostUrl: string = this.configService.getApiUrl();
+  protected readonly hostUrl: string = this.config.getApiUrl();
 
   readonly forgotPasswordForm = new FormGroup({
     email: new FormControl('', {
@@ -38,16 +38,17 @@ export class ForgotPasswordComponent implements OnDestroy {
   loading        : boolean       = false;
 
   constructor() {
-    this.layoutService.hideLayout();
+    this.layout.hide();
   }
 
   submit() {
     const { email } = this.forgotPasswordForm.value;
 
     this.loading = true;
-    this.authService.recoverPassword(email as string).subscribe({
+    this.auth.recoverPassword(email as string).subscribe({
       next: () => {
         this.location.back();
+        this.loading = false;
       },
       error: () => {
         this.errorMessage = `Before you can reset your password, your email must be verified.
@@ -61,7 +62,7 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.layoutService.showLayout();
+    this.layout.show();
   }
 
 }

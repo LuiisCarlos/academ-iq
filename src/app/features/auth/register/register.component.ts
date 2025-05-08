@@ -20,11 +20,11 @@ import { UserRegisterDto } from '../../../core/models/auth.models';
   ]
 })
 export class RegisterComponent {
-  private readonly layoutService : LayoutService = inject(LayoutService);
-  private readonly configService : ConfigService = inject(ConfigService);
-  private readonly authService   : AuthService   = inject(AuthService);
+  private readonly layout : LayoutService = inject(LayoutService);
+  private readonly config : ConfigService = inject(ConfigService);
+  private readonly auth   : AuthService   = inject(AuthService);
 
-  protected readonly hostUrl: string = this.configService.getApiUrl();
+  protected readonly hostUrl: string = this.config.getApiUrl();
 
   readonly signupForm = new FormGroup({
     username: new FormControl('', {
@@ -56,7 +56,7 @@ export class RegisterComponent {
   loading        : boolean = false;
 
   constructor() {
-    this.layoutService.hideLayout();
+    this.layout.hide();
   }
 
   submit() {
@@ -72,7 +72,7 @@ export class RegisterComponent {
     };
 
     this.loading = true;
-    this.authService.register(registerData).subscribe({
+    this.auth.register(registerData).subscribe({
       next: () => {
         this.successMessage = ` You have successfully registered.
           A verification e-mail has been sent to your e-mail address.
@@ -89,7 +89,7 @@ export class RegisterComponent {
   }
 
   ngOnDestroy(): void {
-    this.layoutService.showLayout();
+    this.layout.show();
   }
 
 }

@@ -1,82 +1,86 @@
 <div class="bg-white w-full h-full shadow-lg flex overflow-hidden">
-  <button mat-dialog-close
-    class="absolute top-2 right-4 text-[#333333] text-3xl hover:text-black cursor-pointer transition duration-300">
-    &times;
-  </button>
+    <button mat-dialog-close
+        class="absolute top-2 right-4 text-[#333333] text-3xl hover:text-black cursor-pointer transition duration-300">
+        &times;
+    </button>
 
-  <!-- Left: Welcome -->
-  <div class="w-1/2 bg-white flex flex-col items-center justify-center p-8">
-    <p class=" absolute top-10 left-10 text-3xl font-semibold mb-4">Welcome!</p>
-    <div class="flex flex-row gap-5 text-9xl font-bold">
-      <p>
-        <span
-          class="bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-pink-400 to-pink-600 animate-gradient-x">
-          IQ.
-        </span>
-      </p>
-      @defer {
-      <img src="{{ hostUrl }}/api/v1/files/smile-emoji-1.png" alt="" class="w-32 h-32 hover:scale-105 transition duration-300">
-      }
+    <!-- Left: Welcome -->
+    <div class="w-1/2 bg-white flex flex-col items-center justify-center p-8">
+        <p class="absolute top-10 left-10 text-2xl text-black font-semibold mb-4">Welcome!</p>
+        <div class="flex flex-row gap-5 text-9xl font-bold">
+            <p>
+                <span
+                    class="bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-pink-400 to-pink-600 animate-gradient-x">
+                    IQ.
+                </span>
+            </p>
+            @defer {
+            <img src="{{ hostUrl }}/api/v1/files/smile-emoji-1.png" alt=""
+                class="w-32 h-32 hover:scale-105 transition duration-300">
+            }
+        </div>
+        <div class="absolute bottom-10 left-10 flex gap-3">
+            <p class="text-sm text-zinc-600">
+                Not a member yet?
+            </p>
+            <span (click)="openRegisterDialog()"
+                class="text-black text-sm font-semibold underline hover:text-zinc-800 cursor-pointer transition duration-300">
+                Register now
+            </span>
+        </div>
     </div>
-    <p class="absolute bottom-10 left-10 text-sm mt-6 text-zinc-600">
-      Not a member yet?
-      <span (click)="openRegisterDialog()"
-        class="font-bold text-black underline hover:text-[#444444] cursor-pointer transition duration-300">Register
-        now</span>
-    </p>
-  </div>
 
-  <!-- Right: Login form -->
-  <div class="w-1/2 bg-white p-8 my-auto">
-    <h2 class="text-2xl font-bold mb-5">Log in</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && submit()" class="flex flex-col space-y-4 text-sm">
-      <p class="text-sm text-[#555555aa] m-0">USERNAME</p>
-      <input type="text" placeholder="Username" formControlName="username"
-        class="text-[#888888aa] border-b border-zinc-200 p-2 py-4 w-full outline-none focus:text-black focus:border-[#666666] transition duration-500"
-        [ngClass]="{ 'text-black': loginForm.get('username')?.value }" />
+    <!-- Right: Login form -->
+    <div class="w-1/2 bg-white p-8 my-auto">
+        <h2 class="text-2xl text-black font-bold mb-10">Log in</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && submit()" class="flex flex-col space-y-4 text-sm">
+            <p class="text-sm text-zinc-500 m-0">Username</p>
+            <input type="text" placeholder="Username" formControlName="username"
+                class="text-[#888888aa] border-b border-zinc-200 p-2 py-4 w-full outline-none focus:text-black focus:border-[#666666] transition duration-500"
+                [ngClass]="{ 'text-black': loginForm.get('username')?.value }" />
 
-      <p class="text-sm text-[#555555aa] m-0">PASSWORD</p>
-      <input type="password" placeholder="Password" formControlName="password"
-        class="text-[#888888aa] border-b border-zinc-200 p-2 py-4 w-full mb-5 outline-none focus:text-black focus:border-[#666666] transition duration-500"
-        [ngClass]="{ 'text-black': loginForm.get('password')?.value }" />
+            <p class="text-sm text-zinc-500 m-0">Password</p>
+            <input type="password" placeholder="Password" formControlName="password"
+                class="text-[#888888aa] border-b border-zinc-200 p-2 py-4 w-full mb-5 outline-none focus:text-black focus:border-[#666666] transition duration-500"
+                [ngClass]="{ 'text-black': loginForm.get('password')?.value }" />
 
-      <div class="text-red-500 text-sm min-h-[1.25rem] my-1">
-        @if (errorMessage) {
-        <span>{{ errorMessage }}</span>
-        }
-      </div>
+            <div class="text-red-500 text-sm min-h-[1.25rem] my-1">
+                @if (errorMessage) {
+                <span>{{ errorMessage }}</span>
+                }
+            </div>
 
-      <button mat-flat-button type="submit"
-        class="bg-[#111111] text-white mt-5 h-[4.5rem] py-2 rounded-md text-xl hover:bg-[#333333] cursor-pointer transition duration-300">
-        @if (loading) {
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" class="inline">
-            <circle cx="18" cy="12" r="0" fill="currentColor">
-              <animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s"
-                keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
-                values="0;2;0;0" />
-            </circle>
-            <circle cx="12" cy="12" r="0" fill="currentColor">
-              <animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s"
-                keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
-                values="0;2;0;0" />
-            </circle>
-            <circle cx="6" cy="12" r="0" fill="currentColor">
-              <animate attributeName="r" begin="0" calcMode="spline" dur="1.5s"
-                keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
-                values="0;2;0;0" />
-            </circle>
-          </svg>
-        </span>
-        } @else {
-        Login in now
-        }
-      </button>
+            <button mat-flat-button type="submit" [disabled]="loading"
+                class="bg-zinc-950 text-white mt-5 py-5 rounded-md text-xl hover:bg-zinc-800 cursor-pointer transition duration-300">
+                @if (loading) {
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" class="inline">
+                        <circle cx="18" cy="12" r="0" fill="currentColor">
+                            <animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s"
+                                keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
+                                values="0;2;0;0" />
+                        </circle>
+                        <circle cx="12" cy="12" r="0" fill="currentColor">
+                            <animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s"
+                                keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
+                                values="0;2;0;0" />
+                        </circle>
+                        <circle cx="6" cy="12" r="0" fill="currentColor">
+                            <animate attributeName="r" begin="0" calcMode="spline" dur="1.5s"
+                                keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite"
+                                values="0;2;0;0" />
+                        </circle>
+                    </svg>
+                </span>
+                } @else {
+                Log in now
+                }
+            </button>
 
-      <p (click)="openForgotPasswordDialog()"
-        class="text-xs text-right text-black text-bold underline hover:text-[#444444] cursor-pointer transition duration-300">
-        Forgot your password?
-      </p>
-    </form>
-  </div>
+            <p (click)="openForgotPasswordDialog()"
+                class="text-xs text-right text-black underline hover:text-zinc-800 cursor-pointer transition duration-300">
+                Forgot your password?
+            </p>
+        </form>
+    </div>
 </div>

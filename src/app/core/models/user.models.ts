@@ -7,14 +7,14 @@ export interface changePasswordDto {
 }
 
 export interface Enrollment {
-    course      : Course,
-    progress    : number,
-    progressState : ProgressState[],
-    isFavorite  : boolean,
-    isArchived  : boolean,
-    isCompleted : boolean,
-    enrolledAt  : string,
-    completedAt : string,
+    course       : Course,
+    progress     : number,
+    progressState: ProgressState,
+    isFavorite   : boolean,
+    isArchived   : boolean,
+    isCompleted  : boolean,
+    enrolledAt   : string,
+    completedAt  : string,
 }
 
 // Estado del progredo actual del usuasrio en Recibido en JSON
@@ -30,7 +30,8 @@ export interface Course {
     title        : string,
     author       : string,
     thumbnailUrl : string,
-    category     : Category
+    category     : Category,
+    duration     : string
 }
 
 export interface SectionState {

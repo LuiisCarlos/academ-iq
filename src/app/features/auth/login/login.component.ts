@@ -18,12 +18,12 @@ import { ConfigService } from '../../../core/services/config/config.service';
   ]
 })
 export class LoginComponent {
-  private readonly layoutService : LayoutService = inject(LayoutService);
-  private readonly authService   : AuthService   = inject(AuthService);
-  private readonly configService : ConfigService = inject(ConfigService);
-  private readonly router        : Router        = inject(Router);
+  private readonly layout : LayoutService = inject(LayoutService);
+  private readonly auth   : AuthService   = inject(AuthService);
+  private readonly config : ConfigService = inject(ConfigService);
+  private readonly router : Router        = inject(Router);
 
-  protected readonly hostUrl: string = this.configService.getApiUrl();
+  protected readonly hostUrl: string = this.config.getApiUrl();
 
   readonly loginForm = new FormGroup({
     username: new FormControl('', {
@@ -40,20 +40,20 @@ export class LoginComponent {
   loading      : boolean = false;
 
   constructor() {
-    this.layoutService.hideLayout();
+    this.layout.hide();
   }
 
   submit() {
     const { username, password } = this.loginForm.value;
 
     this.loading = true;
-    this.authService.login(username as string, password as string).subscribe({
+    this.auth.login(username as string, password as string).subscribe({
       next: () => {
-        this.authService.loadUser().subscribe();
+        this.auth.loadUser().subscribe();
         this.router.navigate(['users/dashboard'])
       },
-      error: (error) => {
-        this.errorMessage = 'Oops! An unexpected error occurred. Please try again later.' + error;
+      error: (error: string) => {
+        this.errorMessage = error;
         this.loading = false;
       },
       complete: () => {
@@ -63,7 +63,7 @@ export class LoginComponent {
   }
 
   ngOnDestroy(): void {
-    this.layoutService.showLayout();
+    this.layout.show();
   }
 
 }

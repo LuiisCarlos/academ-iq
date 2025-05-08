@@ -22,12 +22,11 @@ export class AuthService {
   constructor() {
     effect(() => {
       const token = this.tokenService.getAccessToken();
-      if (token) {
+      if (token)
         this.loadUser().subscribe();
-      } else {
+      else
         this.currentUser.set(null);
-      }
-    }, { allowSignalWrites: true });
+    });
   }
 
   /**
@@ -35,6 +34,7 @@ export class AuthService {
    * in order to register the user in the website
    *
    * @param {UserRegisterDto} userDto the data of the user
+   *
    * @returns Observable<UserRegisterDto>
    */
   register(userDto: UserRegisterDto): Observable<UserRegisterDto> {
@@ -80,7 +80,9 @@ export class AuthService {
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${refreshToken}`});
     return this.http.post<void>(`${this.hostUrl}/api/v1/auth/logout`, null, { headers }).pipe(
-      tap(() => { this.tokenService.removeTokens();}),
+      tap(() => {
+        this.tokenService.removeTokens();
+      }),
       catchError(error => {
         const errorMessage = error.error?.message || 'Unknown error';
         return throwError(() => new Error(errorMessage));
@@ -182,8 +184,10 @@ export class AuthService {
    */
   loadUser(): Observable<UserDetails> {
     return this.http.get<UserDetails>(`${this.hostUrl}/api/v1/users/@me`).pipe(
-      tap(response => this.currentUser.set(response)),
-      catchError(error => {
+      tap((response) => {
+        this.currentUser.set(response);
+      }),
+      catchError((error) => {
         this.currentUser.set(null);
         const errorMessage = error.error?.message || 'Unknown error';
         return throwError(() => new Error(errorMessage));
