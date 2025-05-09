@@ -154,14 +154,13 @@ export class AuthService {
   /**
    *  Performs a request to verify the user in the website
    *
-   * @param {string} token the verify account token
+   * @param {string} verifyToken the verify account token
    *
    * @returns Observable<void>
    */
-  verify(token: string): Observable<void> {
-    const params = new HttpParams()
-      .set('token', token);
-    return this.http.get<void>(`${this.hostUrl}/api/v1/auth/login`, { params }).pipe(
+  verify(verifyToken: string): Observable<void> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${verifyToken}`});
+    return this.http.get<void>(`${this.hostUrl}/api/v1/auth/login`, { headers  }).pipe(
       catchError(error => {
         const errorMessage = error.error?.message || 'Unknown error';
         return throwError(() => new Error(errorMessage));

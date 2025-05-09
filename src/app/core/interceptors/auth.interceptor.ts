@@ -17,7 +17,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     'auth/register',
     'auth/refresh',
     'auth/recover-password',
-    'auth/reset-password'
+    'auth/reset-password',
+    'auth/verify'
   ];
 
   const shouldIgnore = ignoreUrls.some(url => req.url.includes(url));
