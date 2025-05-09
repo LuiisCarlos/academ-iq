@@ -38,18 +38,25 @@
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
-              "outputHashing": "all"
+              {
+                "type": "initial",
+                "maximumWarning": "2mb",
+                "maximumError": "3mb"
+              },
+              {
+                "type": "anyComponentStyle",
+                "maximumWarning": "4kB",
+                "maximumError": "8kB"
+              }
+            ],
+              "outputHashing": "all",
+              "allowedCommonJsDependencies": [
+                "canvg",
+                "core-js",
+                "raf",
+                "rgbcolor",
+                "html2canvas"
+              ]
             },
             "development": {
               "optimization": false,
