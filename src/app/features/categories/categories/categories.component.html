@@ -1,5 +1,4 @@
 <div class="min-h-screen">
-    <!-- Hero Section -->
     <section class="bg-gradient-to-b from-navy-700 to-navy py-20">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
             <h1 class="text-white text-4xl md:text-5xl font-bold mb-4">Explore Our Categories</h1>
@@ -10,7 +9,7 @@
     </section>
 
     <!-- Categories Grid -->
-    <section class="py-20 max-w-7xl mx-auto px-6">
+    <section class="py-20 max-w-[90rem] mx-auto px-6 min-h-250">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             @for (category of categories; track category.id) {
             <div
@@ -19,9 +18,11 @@
                     <div class="p-6">
                         <div class="flex items-center mb-4">
                             <div class="p-3 rounded-lg bg-gradient-to-br from-navy-500 to-navy-400 text-white">
+                                @defer {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                                     <path fill="currentColor" fill-rule="evenodd" [attr.d]="category.svg"></path>
                                 </svg>
+                                }
                             </div>
                             <h2 class="ml-4 text-2xl font-bold text-navy-800">{{ category.name }}</h2>
                         </div>
@@ -29,7 +30,8 @@
                         <div class="flex items-center gap-1 text-sm text-navy-500 font-medium">
                             Find courses
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
                             </svg>
                         </div>
                     </div>

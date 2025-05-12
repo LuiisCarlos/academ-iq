@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, effect, ElementRef, inject, signal, Signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, Signal, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 import { passwordsMatchValidator } from '../../../shared/validators/match-password.validator';

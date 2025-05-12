@@ -87,7 +87,7 @@
                         <h2 class="text-5xl font-bold text-navy">{{ ratingStats().average | number:'1.1-1' }}</h2>
                         <div class="flex mt-2">
                             @for (star of [1,2,3,4,5]; track star) {
-                            <svg class="w-6 h-6" [class.text-pink-600]="star <= ratingStats().average"
+                            <svg class="w-6 h-6" [class.text-amber-300]="star <= ratingStats().average"
                                 [class.text-zinc-300]="star > ratingStats().average" fill="currentColor"
                                 viewBox="0 0 20 20">
                                 <path
@@ -108,7 +108,7 @@
                                 {{ item.stars }} ★
                             </span>
                             <div class="flex-1 h-2 mx-2 bg-zinc-200 rounded-full">
-                                <div class="h-2 bg-pink-600 rounded-full" [style.width.%]="item.percentage"></div>
+                                <div class="h-2 bg-amber-300 rounded-full" [style.width.%]="item.percentage"></div>
                             </div>
                             <span class="text-sm w-12 text-right text-zinc-500">{{ item.percentage }}%</span>
                         </div>
@@ -132,7 +132,7 @@
                                     </div>
                                     <div class="flex">
                                         @for (star of [1,2,3,4,5]; track star) {
-                                        <svg class="w-4 h-4" [class.text-pink-600]="star <= rating.rating"
+                                        <svg class="w-4 h-4" [class.text-amber-300]="star <= rating.rating"
                                             [class.text-zinc-300]="star > rating.rating" fill="currentColor"
                                             viewBox="0 0 20 20">
                                             <path

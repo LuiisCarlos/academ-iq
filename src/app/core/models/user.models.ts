@@ -17,7 +17,7 @@ export interface Enrollment {
     completedAt  : string,
 }
 
-// Estado del progredo actual del usuasrio en Recibido en JSON
+// Estado del progreSo actual del usuario en Recibido en JSON
 
 export interface ProgressState {
     currentSectionId: number,

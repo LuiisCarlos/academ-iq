@@ -17,7 +17,6 @@ import { Course } from '../../../core/models/course.models';
   templateUrl : 'course-accordion.component.html',
   styleUrl    : 'course-accordion.component.css',
   imports     : [
-    RouterLink,
     RouterModule,
     TimeFormatPipe
   ]
@@ -25,8 +24,10 @@ import { Course } from '../../../core/models/course.models';
 export class CourseAccordionComponent {
   course       : InputSignal<Course>      = input.required<Course>();
   onPlayer     : InputSignal<boolean>     = input.required<boolean>();
+  currentLesson : InputSignal<number | undefined> = input<number | undefined>();
   itemToggled  : OutputEmitterRef<number> = output<number>();
   openSections : WritableSignal<number[]> = signal([0]);
+  lessonSelected : OutputEmitterRef<string> = output<string>();
 
   toggleItem(index: number) {
     this.openSections.update(current => {
@@ -40,6 +41,10 @@ export class CourseAccordionComponent {
 
   isSectionOpen(index: number): boolean {
     return this.openSections().includes(index);
+  }
+
+  selectLesson(lessonSelect: string) {
+    this.lessonSelected.emit(lessonSelect);
   }
 
 }

@@ -99,7 +99,7 @@ export class CourseDetailComponent {
     if (this.enrollment === null)
       this.enrollmentService.saveByCourseId(courseId, isFavorite).subscribe();
 
-    this.router.navigate(['/courses/watch/', courseId]);
+    this.router.navigate(['/courses', courseId, 'watch']);
   }
 
   setActiveTab(tab: string) {

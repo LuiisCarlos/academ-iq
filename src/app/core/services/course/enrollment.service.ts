@@ -1,7 +1,7 @@
-import { Observable, catchError, switchMap, throwError } from 'rxjs';
+import { Observable, Subject, catchError, switchMap, throwError } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { inject, Injectable } from '@angular/core';
-import { Enrollment } from '../../models/user.models';
+import { Enrollment, ProgressState } from '../../models/user.models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
@@ -42,6 +42,16 @@ export class EnrollmentService {
     );
   }
 
+  patchCompleted(courseId: number): Observable<Enrollment> {
+    return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, { isCompleted: true })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = error.message || 'Unknown error';
+          return throwError(() => new Error(errorMessage));
+        })
+      );
+  }
+
   patchFavorite(courseId: number, isFavorite: boolean): Observable<Enrollment> {
     return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, { isFavorite })
       .pipe(
@@ -61,6 +71,18 @@ export class EnrollmentService {
     return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, { isArchived })
       .pipe(
         catchError((error: HttpErrorResponse) => {
+          const errorMessage = error.message || 'Unknown error';
+          return throwError(() => new Error(errorMessage));
+        })
+      );
+  }
+
+  patchProgressState(courseId: number, progressState: ProgressState): Observable<Enrollment> {
+    console.log(progressState);
+    return this.http.put<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}/progress`, progressState)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.log(error);
           const errorMessage = error.message || 'Unknown error';
           return throwError(() => new Error(errorMessage));
         })

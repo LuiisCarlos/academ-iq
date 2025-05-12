@@ -1,6 +1,6 @@
 <div class="relative aspect-video w-full bg-black rounded-lg overflow-hidden">
     @if (videoSrc) {
-    <video [src]="videoSrc" controls [autoplay]="autoplay" [muted]="autoplay" class="w-full h-full object-cover"
+    <video [src]="videoSrc" controls pause [muted]="autoplay" class="w-full h-full object-cover"
         (loadedmetadata)="onVideoLoaded()" (error)="onVideoError()">
         Video not supported by the browser.
     </video>

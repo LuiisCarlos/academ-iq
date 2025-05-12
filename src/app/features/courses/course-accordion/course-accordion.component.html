@@ -47,10 +47,9 @@
                         </svg>
                     </div>
 
-                    <a [routerLink]="['/courses/watch', course().id]"
-                        [queryParams]="{ section: section.id, lesson: lesson.id }"
-                        class="text-navy underline line-clamp-1 hover:text-slate-800 transition duration-300"
-                        [class.text-sm]="onPlayer()" [title]="lesson.name">
+                    <a (click)="selectLesson(section.id + ':' + lesson.id)"
+                        class="text-navy underline line-clamp-1 hover:text-slate-800 cursor-pointer transition duration-300"
+                        [class.text-sm]="onPlayer()" [title]="lesson.name" [class.font-bold]="lesson.id === currentLesson()">
                         {{ lesson.name }}
                         <!--<span class="block text-xs text-zinc-500 mt-1">{{ lesson.duration | formatStringToTime }}</span>-->
                     </a>

@@ -3,7 +3,9 @@
         <div class="flex items-center justify-between items-center">
             <div class="flex flex-row gap-5 items-center min-w-50">
                 <a [routerLink]="['/home']" class="hover:scale-105 transition duration-300 ">
-                    <img src="{{ hostUrl }}/api/v1/files/academiq-logo.png" class="size-8" />
+                    @defer {
+                        <img src="{{ hostUrl }}/api/v1/files/academiq-logo.png" class="size-8" />
+                    }
                 </a>
                 <a [routerLink]="['/home']" class="text-lg text-white font-bold">ACADEM-IQ</a>
             </div>

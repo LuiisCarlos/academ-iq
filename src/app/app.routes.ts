@@ -18,6 +18,7 @@ import { CourseWatchComponent } from './features/courses/course-watch/course-wat
 import { VerifyComponent } from './features/auth/verify/verify.component';
 import { CategoriesComponent } from './features/categories/categories/categories.component';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
+import { CourseReviewComponent } from './features/courses/course-review/course-review.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
@@ -54,8 +55,9 @@ export const routes: Routes = [
     {
         path: 'courses',
         children: [
-            { path: ':id', component: CourseDetailComponent, canActivate: [authGuard], },
-            { path: 'watch/:id', component: CourseWatchComponent, canActivate: [authGuard], }
+            { path: ':id', component: CourseDetailComponent, canActivate: [authGuard] },
+            { path: ':id/watch', component: CourseWatchComponent, canActivate: [authGuard] },
+            { path: ':id/review', component: CourseReviewComponent, canActivate: [authGuard] }
         ]
     },
     {
