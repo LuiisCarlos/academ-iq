@@ -159,8 +159,8 @@ export class AuthService {
    * @returns Observable<void>
    */
   verify(verifyToken: string): Observable<void> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${verifyToken}`});
-    return this.http.get<void>(`${this.hostUrl}/api/v1/auth/login`, { headers  }).pipe(
+    const params = new HttpParams().set('token', verifyToken);
+    return this.http.get<void>(`${this.hostUrl}/api/v1/auth/verify`, { params }).pipe(
       catchError(error => {
         const errorMessage = error.error?.message || 'Unknown error';
         return throwError(() => new Error(errorMessage));

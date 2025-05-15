@@ -7,6 +7,8 @@ import { passwordsMatchValidator } from '../../../shared/validators/match-passwo
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { ConfigService } from '../../../core/services/config/config.service';
 import { UserRegisterDto } from '../../../core/models/auth.models';
+import { ToastComponent } from '../../../shared/components/toast/toast.component';
+
 
 @Component({
   selector    : 'app-register-dialog',
@@ -15,7 +17,8 @@ import { UserRegisterDto } from '../../../core/models/auth.models';
   imports     : [
     CommonModule,
     MatDialogModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastComponent
   ]
 })
 export class RegisterDialogComponent {
@@ -35,7 +38,7 @@ export class RegisterDialogComponent {
       nonNullable : true
     }),
     password: new FormControl('', {
-      validators  : [ Validators.required, Validators.minLength(6)], // TODO: Password pattern
+      validators  : [ Validators.required], // TODO: Password pattern
       nonNullable : true,
     }),
     confirmPassword: new FormControl('', {
@@ -53,8 +56,12 @@ export class RegisterDialogComponent {
   successMessage : string  = '';
   errorMessage   : string  = '';
   loading        : boolean = false;
+  showToast      : boolean = false;
 
-  submit() {
+  onSubmit() {
+    this.loading = true;
+    this.showToast = false;
+
     const formValue = this.signupForm.value;
     const registerData: UserRegisterDto = {
       username        : formValue.username!,
@@ -66,15 +73,19 @@ export class RegisterDialogComponent {
       birthdate       : formValue.birthdate!,
     };
 
-    this.loading = true;
+    if (this.signupForm.errors) {
+      this.showToast = true
+    }
+
     this.authService.register(registerData).subscribe({
       next: () => {
         this.successMessage = `You have successfully registered.
           A verification e-mail has been sent to your e-mail address.
           Please follow the instructions in the e-mail to complete your registration.`
       },
-      error: (error) => {
+      error: (error:string) => {
         this.errorMessage = error;
+        this.showToast = true;
         this.loading = false;
       },
       complete: () => {

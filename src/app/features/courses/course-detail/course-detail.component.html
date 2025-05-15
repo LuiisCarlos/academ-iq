@@ -1,6 +1,6 @@
-<div class="max-w-[90rem] mx-auto min-h-screen mb-12 py-6">
+<div class="max-w-[90rem] mx-auto min-h-screen pt-6 pb-50">
     <!-- Hero Section -->
-    <div class="relative bg-black rounded-xl overflow-hidden min-h-[200px] mb-8">
+    <div class="relative bg-black rounded-xl overflow-hidden min-h-[200px]">
         <div class="absolute inset-0 bg-cover bg-center z-0"
             [ngStyle]="{ 'background-image': 'url(' + course.thumbnailUrl + ')' }">
         </div>
@@ -22,7 +22,7 @@
 
                 <div class="flex items-center gap-4">
                     @if (enrollment?.isFavorite) {
-                        <button (click)="setIsFavorite(course.id, false)" class="flex items-center gap-2 group">
+                    <button (click)="setIsFavorite(course.id, false)" class="flex items-center gap-2 group">
                         <span class="text-zinc-200 group-hover:text-white transition-colors">
                             Remove from favorites
                         </span>
@@ -35,7 +35,7 @@
                         </div>
                     </button>
                     } @else {
-                    <button (click)="setIsFavorite(course.id, true)"  class="flex items-center gap-2 group">
+                    <button (click)="setIsFavorite(course.id, true)" class="flex items-center gap-2 group">
                         <span class="text-zinc-200 group-hover:text-white transition-colors">
                             Add to favorites
                         </span>
@@ -49,9 +49,30 @@
                     </button>
                     }
 
-                    <button (click)="enrollUser(course.id)"
-                        class="bg-white text-black rounded-lg px-8 py-2 hover:bg-zinc-200 cursor-pointer transition duration-300">
+                    <button (click)="enrollUser(course.id)" [disabled]="loading" [class.cursor-not-allowed]="loading"
+                        class="bg-white text-black rounded-lg px-8 py-2 w-50 hover:bg-zinc-200 cursor-pointer transition duration-300">
+                        @if(!loading) {
                         Start watching
+                        } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            class="inline">
+                            <circle cx="18" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                            <circle cx="12" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                            <circle cx="6" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin="0" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                        </svg>
+                        }
                     </button>
                 </div>
             </div>
@@ -196,3 +217,7 @@
         </div>
     </div>
 </div>
+
+@if(showToast) {
+<app-toast [message]="errorMessage" [type]="'error'" [showToast]="showToast"></app-toast>
+}

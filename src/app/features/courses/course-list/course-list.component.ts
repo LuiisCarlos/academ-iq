@@ -2,6 +2,7 @@ import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { switchMap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 import { EnrollmentService } from '../../../core/services/course/enrollment.service';
@@ -10,6 +11,7 @@ import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { Category, Course } from '../../../core/models/course.models';
 import { Enrollment } from '../../../core/models/user.models';
+import { ToastComponent } from '../../../shared/components/toast/toast.component';
 
 @Component({
   selector    : 'app-course-list',
@@ -20,7 +22,8 @@ import { Enrollment } from '../../../core/models/user.models';
     FormsModule,
     CommonModule,
     TimeFormatPipe,
-    MatPaginatorModule
+    MatPaginatorModule,
+    ToastComponent
   ],
 })
 export class CourseListComponent {
@@ -32,13 +35,19 @@ export class CourseListComponent {
   courses       : WritableSignal<Course[]>     = signal<Course[]>([]);
   categories    : WritableSignal<Category[]>   = signal<Category[]>([]);
   enrollments   : WritableSignal<Enrollment[]> = signal<Enrollment[]>([]);
-  levels        : string[] = ['Beginner', 'Intermediate', 'Advanced'];
-  currentRating : number   = 0;
-  hoverRating   : number   = 0;
   pageSize = signal(24);
   pageIndex = signal(0);
   pageSizeOptions = signal([24]);
-  filters = {
+
+  levels            : string[] = ['Beginner', 'Intermediate', 'Advanced'];
+  currentRating     : number   = 0;
+  hoverRating       : number   = 0;
+  loadingCourses    : boolean  = false;
+  loadingCategories : boolean  = false;
+  loadingFavorite   : boolean  = false;
+  errorMessage      : string   = '';
+  showToast         : boolean  = false;
+    filters = {
     title      : '',
     levels     : {} as {[key: string]: boolean},
     categories : {} as {[key: string]: boolean},
@@ -50,15 +59,23 @@ export class CourseListComponent {
   }
 
   private loadData() {
-    this.courseService.findAll().subscribe({
-      next: (response) => {
-        this.courses.set(response);
-      }
-    });
-
+    this.loadingCategories = true;
     this.courseService.findAllCategories().subscribe({
       next: (response) => {
         this.categories.set(response);
+      },
+      complete: () => {
+        this.loadingCategories = false
+      }
+    });
+
+    this.loadingCourses = true
+    this.courseService.findAll().subscribe({
+      next: (response) => {
+        this.courses.set(response);
+      },
+      complete: () => {
+        this.loadingCourses = false
       }
     });
 
@@ -132,11 +149,27 @@ export class CourseListComponent {
       return;
     }
 
-    this.enrollmentService.patchFavorite(courseId, isFavorite).subscribe({
-      next: (response) => {
-        this.enrollments.update((current) =>
-          current.map(e => e.course.id === courseId ? response : e)
-        );
+    this.loadingFavorite = true;
+    this.showToast = false;
+    this.enrollmentService.findOrCreate(courseId).pipe(
+      switchMap(enrollment => {
+        return this.enrollmentService.update(enrollment.course.id, { isFavorite });
+      })
+    ).subscribe({
+      next: (updatedEnrollment) => {
+        this.enrollments.update(current => {
+          if (current.some(e => e.course.id === courseId))
+            return current.map(e => e.course.id === courseId ? updatedEnrollment : e);
+          else
+            return [...current, updatedEnrollment];
+        });
+      },
+      error: (error: string) => {
+        this.errorMessage = error;
+        this.showToast = true;
+      },
+      complete: () => {
+        this.loadingFavorite = false;
       }
     });
   }

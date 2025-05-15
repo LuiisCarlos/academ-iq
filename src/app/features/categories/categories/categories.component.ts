@@ -13,15 +13,20 @@ export class CategoriesComponent {
   private readonly course: CourseService = inject(CourseService);
 
   categories: Category[] = [];
+  loading: boolean = false;
 
   constructor() {
     this.loadData();
   }
 
   private loadData(): void {
+    this.loading = true
     this.course.findAllCategories().subscribe({
       next: (response) => {
         this.categories = response;
+      },
+      complete: () => {
+        this.loading = false
       }
     })
   }

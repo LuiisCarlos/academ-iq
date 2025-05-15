@@ -1,4 +1,4 @@
-import { Observable, Subject, catchError, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, of, switchMap, throwError } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { inject, Injectable } from '@angular/core';
 import { Enrollment, ProgressState } from '../../models/user.models';
@@ -8,85 +8,157 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
   providedIn: 'root'
 })
 export class EnrollmentService {
-  private readonly http   : HttpClient    = inject(HttpClient);
-  private readonly config : ConfigService = inject(ConfigService);
-
+  private readonly http = inject(HttpClient);
+  private readonly config = inject(ConfigService);
   protected readonly apiUrl: string = this.config.getApiUrl();
 
-  saveByCourseId(courseId: number, isFavorite?: boolean ): Observable<Enrollment> {
-    const body = isFavorite !== undefined ? { isFavorite } : null;
-
-    return this.http.post<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, body).pipe(
-      catchError((error: HttpErrorResponse) => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
+  /**
+   * Creates a new enrollment for a course
+   *
+   * @param {number} courseId - The ID of the course to enroll in
+   * @param {Object} [flags] - Optional flags for the enrollment
+   * @param {boolean} [flags.isFavorite] - Whether the course should be marked as favorite
+   *
+   * @returns {Observable<Enrollment>} An observable of the created enrollment
+   */
+  create(courseId: number, flags?: { isFavorite?: boolean }): Observable<Enrollment> {
+    return this.http.post<Enrollment>(
+      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`,
+      flags || null
+    ).pipe(
+      catchError(this.handleError)
     );
   }
 
+  /**
+   * Gets all enrollments for the current user
+   *
+   * @returns {Observable<Enrollment[]>} An observable of the user's enrollments
+   */
   findAll(): Observable<Enrollment[]> {
-    return this.http.get<Enrollment[]>(`${this.apiUrl}/api/v1/users/@me/enrollments`).pipe(
-      catchError((error: HttpErrorResponse) => {
-        const errorMessage = error.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
+    return this.http.get<Enrollment[]>(
+      `${this.apiUrl}/api/v1/users/@me/enrollments`
+    ).pipe(
+      catchError(this.handleError)
     );
   }
 
+  /**
+   * Gets a specific enrollment by course ID
+   *
+   * @param {number} courseId - The ID of the course
+   *
+   * @returns {Observable<Enrollment>} An observable of the enrollment
+   */
   findById(courseId: number): Observable<Enrollment> {
-    return this.http.get<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`).pipe(
+    return this.http.get<Enrollment>(
+      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Finds or creates an enrollment if it doesn't exist
+   *
+   * @param {number} courseId - The ID of the course
+   *
+   * @returns {Observable<Enrollment>} An observable of the found or created enrollment
+   */
+  findOrCreate(courseId: number): Observable<Enrollment> {
+    return this.findById(courseId).pipe(
+      catchError(() => this.create(courseId))
+    );
+  }
+
+  /**
+   * Updates basic enrollment properties. If enrollment doesn't exist (404),
+   * creates a new one and applies the updates.
+   *
+   * @param {number} courseId - The ID of the course
+   * @param {Object} updates - The properties to update
+   * @returns {Observable<Enrollment>} An observable of the updated enrollment
+   */
+  update(courseId: number, updates: {
+    isFavorite?: boolean,
+    isArchived?: boolean
+  }): Observable<Enrollment> {
+    return this.http.put<Enrollment>(
+      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`,
+      updates
+    ).pipe(
       catchError((error: HttpErrorResponse) => {
-        const errorMessage = error.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
+        if (error.status === 404) {
+          // Enrollment not found - create new one with the desired updates
+          return this.create(courseId, updates).pipe(
+            switchMap(enrollment => {
+              // Return the newly created enrollment with updates already applied
+              return of(enrollment);
+            })
+          );
+        }
+        return this.handleError(error);
       })
     );
   }
 
-  patchCompleted(courseId: number): Observable<Enrollment> {
-    return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, { isCompleted: true })
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          const errorMessage = error.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
-        })
-      );
+  /**
+   * Updates the course progress state
+   *
+   * @param {number} courseId - The ID of the course
+   * @param {number} sectionId - The ID of the current section
+   * @param {number} lessonId - The ID of the current lesson
+   * @param {boolean} markAsCompleted - Whether to mark the lesson as completed
+   *
+   * @returns {Observable<Enrollment>} An observable of the updated enrollment
+   */
+  updateProgress(
+    courseId: number,
+    sectionId: number,
+    lessonId: number,
+    markAsCompleted: boolean
+  ): Observable<Enrollment> {
+    const updates = {
+      sectionId,
+      lessonId,
+      isCompleted: markAsCompleted
+    };
+
+    return this.http.patch<Enrollment>(
+      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}/progress`,
+      updates
+    ).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  patchFavorite(courseId: number, isFavorite: boolean): Observable<Enrollment> {
-    return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, { isFavorite })
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 403 || error.status === 404)
-            return this.saveByCourseId(courseId, isFavorite).pipe(
-              switchMap(() => this.patchFavorite(courseId, isFavorite))
-            )
-
-          const errorMessage = error.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
-        })
-      );
+  /**
+   * Deletes an enrollment
+   *
+   * @param {number} courseId - The ID of the course
+   *
+   * @returns {Observable<void>} An observable that completes when deletion is done
+   */
+  delete(courseId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`
+    ).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  patchArchived(courseId: number, isArchived: boolean): Observable<Enrollment> {
-    return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, { isArchived })
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          const errorMessage = error.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
-        })
-      );
-  }
-
-  patchProgressState(courseId: number, progressState: ProgressState): Observable<Enrollment> {
-    console.log(progressState);
-    return this.http.put<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}/progress`, progressState)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          console.log(error);
-          const errorMessage = error.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
-        })
-      );
+  /**
+   * Handles HTTP errors
+   *
+   * @param {HttpErrorResponse} error - The HTTP error response
+   *
+   * @returns {Observable<never>} An observable that throws the error message
+   *
+   * @private
+   */
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    const errorMessage = error.error?.message || error.message || 'Unknown error';
+    return throwError(() => new Error(errorMessage + error.url));
   }
 
 }

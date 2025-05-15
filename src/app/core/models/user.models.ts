@@ -20,9 +20,15 @@ export interface Enrollment {
 // Estado del progreSo actual del usuario en Recibido en JSON
 
 export interface ProgressState {
-    currentSectionId: number,
-    currentLessonId: number
-    sections: SectionState[]
+  currentSectionId : number | null;
+  currentLessonId  : number | null;
+  completedLessons : CompletedLesson[];
+}
+
+export interface CompletedLesson {
+  sectionId   : number;
+  lessonId    : number;
+  completedAt : string;
 }
 
 export interface Course {
@@ -32,32 +38,4 @@ export interface Course {
     thumbnailUrl : string,
     category     : Category,
     duration     : string
-}
-
-export interface SectionState {
-    sectionId: number;
-    completed: boolean;
-    lessons: LessonState[];
-}
-
-export interface LessonState {
-    lessonId: number;
-    completed: boolean;
-    lastAccessed: string | null;
-    videoProgress: number;
-}
-
-// Para actualizar progreso
-
-export interface LessonProgressUpdate {
-    sectionId: number;
-    lessonId: number;
-    completed: boolean;
-    videoProgress: number;
-}
-
-export interface CourseProgress {
-currentSectionId: number | null;
-currentLessonId: number | null;
-sections: SectionState[];
 }

@@ -33,9 +33,10 @@ export class DashboardComponent {
   enrollmentsFavorites = computed(() => this.enrollments().filter(e => e.isFavorite && !e.isArchived));
   enrollmentsArchived  = computed(() => this.enrollments().filter(e => e.isArchived));
   user: Signal<UserDetails | null> = this.auth.user;
-  activeTab: string = 'courses';
-  loading = signal(false);
   error = signal(false);
+
+  activeTab : string  = 'courses';
+  loading   : boolean = false;
   tabs: Tab[] = [
     { id: 'courses',   label: 'Courses'   },
     { id: 'favorites', label: 'Favorites' },
@@ -48,9 +49,16 @@ export class DashboardComponent {
   }
 
   private loadData() {
+    this.loading = true;
     this.enrollment.findAll().subscribe({
       next: (response) => {
         this.enrollments.set(response);
+      },
+      error: () => {
+
+      },
+      complete: () => {
+        this.loading = false;
       }
     })
   }
@@ -59,9 +67,7 @@ export class DashboardComponent {
     if (!enrollment.isCompleted)
       return;
 
-    this.loading.set(true);
     this.error.set(false);
-
     const certificateData = {
       userName   : this.user()?.firstname! + ' ' + this.user()?.lastname!,
       userDni    : this.user()?.dni!,
@@ -69,14 +75,10 @@ export class DashboardComponent {
     };
 
     this.certificate.generate(certificateData);
-
-    this.loading.set(false);
-
-    // reaccionar cuando el PDF esté listo ?
   }
 
   setIsFavorite(courseId: number, isFavorite: boolean) {
-    this.enrollment.patchFavorite(courseId, isFavorite).subscribe({
+    this.enrollment.update(courseId, { isFavorite }).subscribe({
       next: (response) => {
         this.enrollments.update((current) =>
           current.map(e => e.course.id === courseId ? response : e)
@@ -86,7 +88,7 @@ export class DashboardComponent {
   }
 
   setIsArchived(courseId: number, isArchived: boolean) {
-    this.enrollment.patchArchived(courseId, isArchived).subscribe({
+    this.enrollment.update(courseId, { isArchived }).subscribe({
       next: (response) => {
         this.enrollments.update((current) =>
           current.map(e => e.course.id === courseId ? response : e)

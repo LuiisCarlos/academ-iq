@@ -16,8 +16,8 @@ export class CertificateService {
 
   protected readonly apiUrl: string = this.config.getApiUrl();
 
-  logoUrl: string = `${this.apiUrl}/api/v1/files/academiq-logo.png`; // <- default empty, user can set manually
-  signatureUrl: string = `${this.apiUrl}/api/v1/files/academiq-ceo-signature.png`; // <- default empty, user can set manually
+  logoUrl: string = 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091207/academiq-logo_gyofsk.png'; // <- default empty, user can set manually
+  signatureUrl: string = 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091208/academiq-ceo-signature_uqqjic.png'; // <- default empty, user can set manually
   watermarkText: string = 'IQ.';
 
   async generate(data: {

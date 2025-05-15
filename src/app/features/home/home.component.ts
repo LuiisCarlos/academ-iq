@@ -36,7 +36,7 @@ export class HomeComponent {
   tabs = [
     {
       id: 'certification',
-      imageUrl: `${this.apiUrl}/api/v1/files/academiq-certificates.png`,
+      imageUrl: 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091207/academiq-certificates_rdjai9.png',
       title: 'Certificación Profesional',
       description: 'Obtén certificados reconocidos al completar cursos',
       longDescription: 'Nuestras certificaciones están validadas por la industria y demuestran tu dominio en cada área. Completa todos los módulos y exámenes para obtener tu certificado digital que podrás compartir en LinkedIn y otras redes profesionales.',

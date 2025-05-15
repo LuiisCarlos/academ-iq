@@ -4,8 +4,7 @@ export const environment = {
   production: false,
   appVersion: `${version}-dev`,
 
-  apiUrl: 'academ-iq-api-production.up.railway.app',
-  //apiUrl: 'http://172.20.10.3:8888',
+  apiUrl: 'http://academ-iq-api-production.up.railway.app',
 
   settings: {
     auth: {

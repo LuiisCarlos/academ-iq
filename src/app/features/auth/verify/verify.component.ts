@@ -28,18 +28,20 @@ export class VerifyComponent {
   }
 
   verifyAccount(token: string) {
+    console.log('hola');
     this.auth.verify(token).subscribe({
       next: () => {
         this.type = 'success';
-        this.router.navigate(['/auth/login']);
         this.message = 'You account has been successfully verified';
         this.showToast = true;
       },
       error: (error: string) => {
-        this.router.navigate(['/home']);
         this.type = 'error';
         this.message = error ?? 'An unexpected error occurred. Please, try again later.';
         this.showToast = true;
+      },
+      complete: () => {
+        this.router.navigate(['/home']);
       }
     });
   }

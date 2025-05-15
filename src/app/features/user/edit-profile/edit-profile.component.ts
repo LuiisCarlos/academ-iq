@@ -9,6 +9,7 @@ import { changePasswordDto } from '../../../core/models/user.models';
 import { UserService } from '../../../core/services/user.service';
 import { UserDetails } from '../../../core/models/auth.models';
 import { Category } from '../../../core/models/course.models';
+import { AvatarUploadComponent } from '../../../shared/components/avatar-upload/avatar-upload.component';
 
 interface Tab {
   id    : string;
@@ -21,7 +22,8 @@ interface Tab {
   styleUrl    : './edit-profile.component.css',
   imports     : [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AvatarUploadComponent
   ],
 })
 export class EditProfileComponent {

@@ -1,16 +1,17 @@
 import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { CourseAccordionComponent } from '../course-accordion/course-accordion.component';
-import { EnrollmentService } from '../../../core/services/course/enrollment.service';
 import { CourseService } from '../../../core/services/course/course.service';
-import { RatingStatsPipe } from '../../../shared/pipes/rating-stats.pipe';
-import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
+import { EnrollmentService } from '../../../core/services/course/enrollment.service';
 import { Enrollment } from '../../../core/models/user.models';
+import { RatingStatsPipe } from '../../../shared/pipes/rating-stats.pipe';
 import { Course } from '../../../core/models/course.models';
+import { ToastComponent } from '../../../shared/components/toast/toast.component';
 
 interface Tab {
   id    : string;
@@ -25,7 +26,8 @@ interface Tab {
     TimeAgoPipe,
     CommonModule,
     TimeFormatPipe,
-    CourseAccordionComponent
+    CourseAccordionComponent,
+    ToastComponent
   ]
 })
 export class CourseDetailComponent {
@@ -36,10 +38,14 @@ export class CourseDetailComponent {
   private readonly router            : Router            = inject(Router);
 
   showAllComments    : WritableSignal<boolean> = signal(false);
+
   course             : Course            = { } as Course;
   enrollment         : Enrollment | null = null;
-  maxVisibleComments : number     = 3;
-  activeTab          : string     = 'sections';
+  maxVisibleComments : number  = 3;
+  activeTab          : string  = 'sections';
+  loading            : boolean = false;
+  showToast          : boolean = false;
+  errorMessage       : string  = '';
   tabs: Tab[] = [
     { id: 'sections', label: 'Sections' },
     { id: 'ratings',  label: 'Ratings'  }
@@ -85,7 +91,7 @@ export class CourseDetailComponent {
       return;
     }
 
-    this.enrollmentService.patchFavorite(courseId, isFavorite).subscribe({
+    this.enrollmentService.update(courseId, { isFavorite }).subscribe({
       next: (response) => {
         this.enrollment = response;
       },
@@ -96,11 +102,28 @@ export class CourseDetailComponent {
   }
 
   enrollUser(courseId: number, isFavorite?: boolean) {
-    if (this.enrollment === null)
-      this.enrollmentService.saveByCourseId(courseId, isFavorite).subscribe();
-
-    this.router.navigate(['/courses', courseId, 'watch']);
+    this.loading = true;
+    this.showToast = false;
+    if (this.enrollment === null) {
+      this.enrollmentService.create(courseId, { isFavorite }).subscribe({
+        next: (response) => {
+          this.enrollment = response;
+          this.router.navigate(['/courses', courseId, 'watch']);
+        },
+        error: (error: string) => {
+          this.errorMessage = error;
+          this.showToast = true;
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
+    } else {
+      this.loading = false;
+      this.router.navigate(['/courses', courseId, 'watch']);
+    }
   }
+
 
   setActiveTab(tab: string) {
     this.activeTab = tab;

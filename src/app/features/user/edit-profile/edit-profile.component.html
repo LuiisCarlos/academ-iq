@@ -30,17 +30,14 @@
             <div class="space-y-8">
                 <form>
                     <h2 class="text-2xl font-light text-navy-800 mb-6">Profile Avatar</h2>
-                    <div class="flex items-center justify-center gap-6">
+                    <!-- <div class="flex items-center justify-center gap-6">
                         <div class="relative">
-                            <!-- Avatar actual -->
                             <img [src]="avatarPreview || user()?.avatarUrl" alt="Avatar"
                                 class="size-24 rounded-full object-cover border-2 border-slate-300">
 
-                            <!-- Botón para abrir el selector de archivos (oculto) -->
                             <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)"
                                 class="hidden">
 
-                            <!-- Botón visible que dispara el input -->
                             <button (click)="fileInput.click()"
                                 class="absolute -bottom-2 -right-2 bg-white/85 p-2 rounded-full shadow-md hover:bg-white/95 hover:text-pink-600 hover:scale-105 cursor-pointer transition-transform">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24"
@@ -53,12 +50,12 @@
                             </button>
                         </div>
 
-                        <!-- Botón secundario para abrir el selector -->
                         <button (click)="fileInput.click()"
                             class="text-navy border border-navy px-6 py-2 rounded-md hover:bg-navy-800/10 cursor-pointer transition duration-300">
                             Change Avatar
                         </button>
-                    </div>
+                    </div> -->
+                    <app-avatar-upload [currentAvatarUrl]="user()?.avatarUrl ?? ''"></app-avatar-upload>
 
                     <!-- Mensaje de error -->
                     @if (errorMessage) {
