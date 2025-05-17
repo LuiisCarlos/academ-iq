@@ -1,8 +1,8 @@
-<div [class.hidden]="!show"
+<div [class.hidden]="!visible"
     class="fixed bottom-5 right-5 max-w-sm px-4 py-2 rounded-xl shadow-xl animate-fade-left transition-all duration-300"
     [class]="getToastStyles().bg + ' ' + getToastStyles().border">
     <div class="flex items-center gap-4">
-        <figure class="flex justify-center items-center text-white rounded-md w-14 h-8"
+        <figure class="flex justify-center items-center text-white rounded-md size-8"
                 [class]="getToastStyles().iconBg">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="currentColor" [attr.d]="getToastStyles().iconPath" />
@@ -11,10 +11,10 @@
         <p [class]="getToastStyles().text" class="text-base">
             {{ message }}
         </p>
-        <button (click)="closeToast()"
+        <!-- <button (click)="closeToast()"
             class="flex justify-center items-center text-2xl h-10 px-2 hover:cursor-pointer"
             [class]="getToastStyles().text">
             &times;
-        </button>
+        </button> -->
     </div>
 </div>

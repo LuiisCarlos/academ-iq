@@ -28,7 +28,9 @@ export class NavbarComponent {
   private dialog: MatDialog = inject(MatDialog);
 
   user   : Signal<UserDetails | null> = this.authService.user;
-  isOpen : boolean            = false;
+
+  isOpen    : boolean = false;
+  isMenuOpen: boolean = false;
 
   openRegisterDialog() {
     const dialogRef = this.dialog.open(RegisterDialogComponent, {
@@ -93,5 +95,15 @@ export class NavbarComponent {
   toggleDropdown() {
     this.isOpen = !this.isOpen;
   }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    // Controlar el scroll del body
+    if (this.isMenuOpen) {
+        document.body.classList.add('menu-open');
+    } else {
+        document.body.classList.remove('menu-open');
+    }
+}
 
 }

@@ -18,8 +18,8 @@
             </path>
             <defs>
                 <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#001F3F" />
-                    <stop offset="100%" stop-color="#013A6B" />
+                    <stop offset="0%" stop-color="#ED5C8E" />
+                    <stop offset="100%" stop-color="black" />
                 </linearGradient>
             </defs>
         </svg>
@@ -29,16 +29,11 @@
         <header class="bg-white rounded-xl shadow-xl overflow-hidden mb-8 transition-all hover:shadow-lg">
             <div class="md:flex">
 
-                <div class="relative md:flex-shrink-0 md:w-2/5 bg-cover bg-center bg-no-repeat"
+                <div class="relative md:flex-shrink-0 md:w-4/7 bg-cover bg-no-repeat"
                     [style.backgroundImage]="'url(' + course?.thumbnailUrl + ')'">
                     <div class="absolute inset-0 bg-gradient-to-l from-navy/40 via-navy/40 to-transparent"></div>
                 </div>
 
-                <!-- <div class="md:flex-shrink-0 md:w-2/5">
-                    @defer {
-                    <img class="h-48 w-full object-cover md:h-full" [src]="course?.thumbnailUrl" alt="Course thumbnail">
-                    }
-                </div> -->
                 <div class="p-8 text-center w-full">
                     <div class="uppercase tracking-wide text-sm text-navy-600 font-semibold">Course Completed</div>
                     <h2 class="mt-2 text-2xl font-bold text-gray-900">{{ course?.title }}</h2>
@@ -66,7 +61,7 @@
             <section class="mb-8">
                 <label class="block text-sm font-medium text-navy-700 mb-3">Overall Rating</label>
                 <div class="flex items-center space-x-2">
-                    @for (star of getStarsArray(); track $index) {
+                    @for (star of [1, 2, 3, 4, 5]; track $index) {
 
                     <div (click)="setRating(star)" (mouseenter)="setHoverRating(star)"
                         (mouseleave)="resetHoverRating()">
@@ -114,7 +109,6 @@
         </form>
         }
 
-        <!-- Thank You Message -->
         @if (submitted) {
         <div class="bg-white rounded-xl shadow-md p-8 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
@@ -126,7 +120,7 @@
             <p class="mt-2 text-navy-600">Your feedback helps us improve our courses and helps other learners make
                 informed decisions.</p>
             <div class="mt-6">
-                <button
+                <button [routerLink]="['/users/dashboard']"
                     class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500">
                     Back to My Courses
                 </button>

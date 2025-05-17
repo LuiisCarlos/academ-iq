@@ -1,6 +1,6 @@
 import { Injectable, Signal, WritableSignal, effect, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 
 import { LoginResponseDto, UserRegisterDto, UserDetails } from '../../models/auth.models';
 import { ConfigService } from '../config/config.service';
@@ -10,14 +10,14 @@ import { TokenService } from './token.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly configService : ConfigService = inject(ConfigService);
-  private readonly tokenService  : TokenService  = inject(TokenService);
-  private readonly http          : HttpClient    = inject(HttpClient);
+  private readonly configService: ConfigService = inject(ConfigService);
+  private readonly tokenService: TokenService = inject(TokenService);
+  private readonly http: HttpClient = inject(HttpClient);
 
-  protected readonly hostUrl : string = this.configService.getApiUrl();
+  protected readonly hostUrl: string = this.configService.getApiUrl();
 
-  private currentUser : WritableSignal<UserDetails | null> = signal(null);
-  public user         : Signal<UserDetails | null>         = this.currentUser.asReadonly();
+  private currentUser: WritableSignal<UserDetails | null> = signal(null);
+  public user: Signal<UserDetails | null> = this.currentUser.asReadonly();
 
   constructor() {
     effect(() => {
@@ -38,12 +38,7 @@ export class AuthService {
    * @returns Observable<UserRegisterDto>
    */
   register(userDto: UserRegisterDto): Observable<UserRegisterDto> {
-    return this.http.post<UserRegisterDto>(`${this.hostUrl}/api/v1/auth/register`, userDto).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.post<UserRegisterDto>(`${this.hostUrl}/api/v1/auth/register`, userDto);
   }
 
   /**
@@ -60,10 +55,6 @@ export class AuthService {
         tap(response => {
           this.tokenService.saveAccessToken(response.accessToken);
           this.tokenService.saveRefreshToken(response.refreshToken);
-        }),
-        catchError(error => {
-          const errorMessage = error.error?.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
         })
       );
   }
@@ -78,14 +69,10 @@ export class AuthService {
     if (!refreshToken)
       return throwError(() => new Error('Refresh token does not exist'));
 
-    const headers = new HttpHeaders({ Authorization: `Bearer ${refreshToken}`});
+    const headers = new HttpHeaders({ Authorization: `Bearer ${refreshToken}` });
     return this.http.post<void>(`${this.hostUrl}/api/v1/auth/logout`, null, { headers }).pipe(
       tap(() => {
         this.tokenService.removeTokens();
-      }),
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -98,12 +85,7 @@ export class AuthService {
    * @returns Observable<void>
    */
   recoverPassword(email: string): Observable<void> {
-    return this.http.post<void>(`${this.hostUrl}/api/v1/auth/recover-password`, email).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.post<void>(`${this.hostUrl}/api/v1/auth/recover-password`, email);
   }
 
   /**
@@ -118,13 +100,10 @@ export class AuthService {
   resetPassword(token: string, password: string, confirmPassword: string): Observable<void> {
     const params = new HttpParams()
       .set('token', token);
-    return this.http.post<void>(`${this.hostUrl}/api/v1/auth/reset-password`,
-        { password, confirmPassword },
-        { params }).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
+    return this.http.post<void>(
+      `${this.hostUrl}/api/v1/auth/reset-password`,
+      { password, confirmPassword },
+      { params }
     );
   }
 
@@ -136,20 +115,17 @@ export class AuthService {
   refresh(): Observable<string> {
     const refreshToken = this.tokenService.getRefreshToken();
     if (!refreshToken)
-      return throwError(() => new Error('Refresh token does not exist'));
+      return throwError(() => new Error('No refresh token available'));
 
-    const headers = new HttpHeaders({ Authorization: `Bearer ${refreshToken}`});
-    return this.http.post<string>(`${this.hostUrl}/api/v1/auth/refresh`, null, { headers }).pipe(
-      tap(response => {
-        console.log(response);
-        this.tokenService.saveAccessToken(response);
-      }),
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
+    const params = new HttpParams().set('token', refreshToken);
+    return this.http.get<string>(`${this.hostUrl}/api/v1/auth/refresh`, { params }).pipe(
+      map(response => {
+        console.log(response)
+        return response;
       })
     );
   }
+
 
   /**
    *  Performs a request to verify the user in the website
@@ -160,12 +136,7 @@ export class AuthService {
    */
   verify(verifyToken: string): Observable<void> {
     const params = new HttpParams().set('token', verifyToken);
-    return this.http.get<void>(`${this.hostUrl}/api/v1/auth/verify`, { params }).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.get<void>(`${this.hostUrl}/api/v1/auth/verify`, { params });
   }
 
   isLoggedIn(): boolean {

@@ -7,8 +7,8 @@ import { CourseService } from '../../../core/services/course/course.service';
 import { File } from '../../../core/models/course.models';
 import { CourseAccordionComponent } from '../course-accordion/course-accordion.component';
 import { Course } from '../../../core/models/course.models';
-import { EnrollmentService } from '../../../core/services/course/enrollment.service';
-import { Enrollment } from '../../../core/models/user.models';
+import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
+import { Enrollment } from '../../../core/models/user-course.models';
 import { CoursePlayerComponent } from '../course-player/course-player.component';
 
 @Component({
@@ -32,6 +32,7 @@ export class CourseWatchComponent {
   course: Course = {} as Course;
   enrollment: Enrollment | null = null;
   lessonsCompleted: number = 0;
+  lessonsTotal: number = 0;
   sectionId: WritableSignal<number> = signal<number>(0);
   lessonId: WritableSignal<number> = signal<number>(0);
   file: WritableSignal<File | null> = signal<File>({} as File);
@@ -52,9 +53,12 @@ export class CourseWatchComponent {
       next: (course) => {
         this.course = course;
         this.enrollmentService.findOrCreate(courseId).subscribe({
-          next: (enrollment) => {
-            this.enrollment = enrollment;
-            this.lessonsCompleted = enrollment.progressState?.completedLessons?.length || 0;
+          next: (response) => {
+            this.enrollment = response;
+            this.lessonsCompleted = response.progressState?.completedLessons?.length || 0;
+            this.lessonsTotal = this.course.sections.reduce(
+              (sum, section) => sum + section.lessons.length, 0
+            );
             this.determineInitialLesson();
             this.checkCourseCompletion();
           }
@@ -227,4 +231,5 @@ export class CourseWatchComponent {
   setActiveTab(tabId: string): void {
     this.activeTab = tabId;
   }
+
 }

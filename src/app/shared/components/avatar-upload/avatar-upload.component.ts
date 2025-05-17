@@ -1,24 +1,21 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 
 import { UserService } from '../../../core/services/user.service';
-import { ToastComponent } from '../toast/toast.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-avatar-upload',
   templateUrl: './avatar-upload.component.html',
-  imports: [ToastComponent]
 })
 export class AvatarUploadComponent {
   private readonly userService: UserService = inject(UserService);
+  private readonly toast      : ToastService = inject(ToastService);
 
   @Input() currentAvatarUrl: string | null = null;
   @Output() uploadComplete = new EventEmitter<string>();
 
-  showToast: boolean = false;
   previewUrl: string | null = null;
   isLoading = false;
-  errorMessage = '';
-
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -27,8 +24,7 @@ export class AvatarUploadComponent {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      this.errorMessage = 'Only Allowed images (JPEG, PNG)';
-      this.showToast = true;
+      this.toast.show('Only Allowed images (JPEG, PNG)', 'error');
       return;
     }
 
@@ -37,7 +33,6 @@ export class AvatarUploadComponent {
   }
 
   uploadFile(file: File) {
-    this.showToast = false;
     this.isLoading = true;
 
     this.userService.patchAvatar(file).subscribe({
@@ -45,11 +40,13 @@ export class AvatarUploadComponent {
         this.uploadComplete.emit(response.avatarUrl);
         this.isLoading = false;
       },
-      error: (error: string) => {
-        this.errorMessage = error;
+      error: (error) => {
+        const message = error.error.message ?? 'An unexpected error occurred. Please, try again later.';
+        this.toast.show(message, 'error');
+      },
+      complete: () => {
         this.isLoading = false;
         this.previewUrl = null;
-        this.showToast = true;
       }
     });
   }

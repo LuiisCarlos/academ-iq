@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
 import { ConfigService } from '../config/config.service';
-import { Enrollment } from '../../models/user.models';
+import { Enrollment } from '../../models/user-course.models';
 
 @Injectable({
   providedIn: 'root'

@@ -14,39 +14,19 @@ export class CourseService {
   private readonly hostUrl       : string        = this.configService.getApiUrl();
 
   findAll(): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.hostUrl}/api/v1/courses`).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.get<Course[]>(`${this.hostUrl}/api/v1/courses`);
   }
 
   findAllCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.hostUrl}/api/v1/courses/categories`).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.get<Category[]>(`${this.hostUrl}/api/v1/courses/categories`);
   }
 
   findCategoryByName(category: string): Observable<Category> {
-    return this.http.get<Category>(`${this.hostUrl}/api/v1/courses/categories/${category}`).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.get<Category>(`${this.hostUrl}/api/v1/courses/categories/${category}`);
   }
 
   findById(id: number): Observable<Course> {
-    return this.http.get<Course>(`${this.hostUrl}/api/v1/courses/${id}`).pipe(
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.get<Course>(`${this.hostUrl}/api/v1/courses/${id}`);
   }
 
 }

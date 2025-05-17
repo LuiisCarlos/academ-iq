@@ -1,4 +1,4 @@
-<div class="max-w-[90rem] mx-auto min-h-screen pt-6 pb-50">
+<div class="max-w-[90rem] mx-auto min-h-screen pt-6 pb-50 px-6 space-y-5">
     <!-- Hero Section -->
     <div class="relative bg-black rounded-xl overflow-hidden min-h-[200px]">
         <div class="absolute inset-0 bg-cover bg-center z-0"
@@ -142,7 +142,7 @@
                     <h3 class="text-xl font-semibold text-navy">Comments ({{ course.ratings.length }})</h3>
 
                     @for (rating of visibleComments(); track $index) {
-                    <div class="p-4 rounded-lg border border-zinc-100 shadow-sm">
+                    <div class="p-4 rounded-lg border border-zinc-100 shadow-md">
                         <div class="flex items-start gap-4">
                             <img [src]="rating.userAvatarUrl" alt="Avatar" class="w-12 h-12 rounded-full object-cover">
                             <div class="flex-1">
@@ -184,17 +184,10 @@
         <!-- Right Column (Sidebar) -->
         <div class="lg:w-80 space-y-6">
             <!-- Instructor Card -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 overflow-hidden">
                 <h2 class="text-lg font-semibold text-navy text-center mb-4">{{ course.author }}</h2>
-                <div class="flex justify-center mb-4">
-                    <img [src]="" alt="Instructor" class="w-24 h-24 rounded-full object-cover">
-                </div>
-                <!-- Add instructor bio or other details here if available -->
-            </div>
-
-            <!-- Requirements -->
-            @if (course.requirements.length > 0) {
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <!-- Requirements -->
+                @if (course.requirements.length > 0) {
                 <div class="bg-zinc-100 px-4 py-3">
                     <h3 class="font-medium text-navy">Requirements</h3>
                 </div>
@@ -212,12 +205,8 @@
                         }
                     </ul>
                 </div>
+                }
             </div>
-            }
         </div>
     </div>
 </div>
-
-@if(showToast) {
-<app-toast [message]="errorMessage" [type]="'error'" [showToast]="showToast"></app-toast>
-}

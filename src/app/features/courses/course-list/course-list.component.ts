@@ -5,13 +5,13 @@ import { CommonModule } from '@angular/common';
 import { switchMap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
-import { EnrollmentService } from '../../../core/services/course/enrollment.service';
+import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
 import { CourseService } from '../../../core/services/course/course.service';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { Category, Course } from '../../../core/models/course.models';
-import { Enrollment } from '../../../core/models/user.models';
-import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { Enrollment } from '../../../core/models/user-course.models';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector    : 'app-course-list',
@@ -22,15 +22,15 @@ import { ToastComponent } from '../../../shared/components/toast/toast.component
     FormsModule,
     CommonModule,
     TimeFormatPipe,
-    MatPaginatorModule,
-    ToastComponent
+    MatPaginatorModule
   ],
 })
 export class CourseListComponent {
   private readonly enrollmentService : EnrollmentService = inject(EnrollmentService);
   private readonly courseService     : CourseService     = inject(CourseService);
   private readonly authService       : AuthService       = inject(AuthService);
-  private readonly router: Router = inject(Router);
+  private readonly toast  : ToastService = inject(ToastService);
+  private readonly router : Router       = inject(Router);
 
   courses       : WritableSignal<Course[]>     = signal<Course[]>([]);
   categories    : WritableSignal<Category[]>   = signal<Category[]>([]);
@@ -45,9 +45,7 @@ export class CourseListComponent {
   loadingCourses    : boolean  = false;
   loadingCategories : boolean  = false;
   loadingFavorite   : boolean  = false;
-  errorMessage      : string   = '';
-  showToast         : boolean  = false;
-    filters = {
+  filters = {
     title      : '',
     levels     : {} as {[key: string]: boolean},
     categories : {} as {[key: string]: boolean},
@@ -150,7 +148,6 @@ export class CourseListComponent {
     }
 
     this.loadingFavorite = true;
-    this.showToast = false;
     this.enrollmentService.findOrCreate(courseId).pipe(
       switchMap(enrollment => {
         return this.enrollmentService.update(enrollment.course.id, { isFavorite });
@@ -164,9 +161,8 @@ export class CourseListComponent {
             return [...current, updatedEnrollment];
         });
       },
-      error: (error: string) => {
-        this.errorMessage = error;
-        this.showToast = true;
+      error: (error) => {
+        this.toast.show(error.error.message, 'error');
       },
       complete: () => {
         this.loadingFavorite = false;

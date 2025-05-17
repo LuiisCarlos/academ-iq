@@ -7,7 +7,7 @@ import { passwordsMatchValidator } from '../../../shared/validators/match-passwo
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { ConfigService } from '../../../core/services/config/config.service';
 import { UserRegisterDto } from '../../../core/models/auth.models';
-import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 
 @Component({
@@ -17,14 +17,14 @@ import { ToastComponent } from '../../../shared/components/toast/toast.component
   imports     : [
     CommonModule,
     MatDialogModule,
-    ReactiveFormsModule,
-    ToastComponent
+    ReactiveFormsModule
   ]
 })
 export class RegisterDialogComponent {
   private readonly dialogRef     : MatDialogRef<RegisterDialogComponent> = inject(MatDialogRef);
   private readonly configService : ConfigService = inject(ConfigService);
   private readonly authService   : AuthService   = inject(AuthService);
+  private readonly toast         : ToastService  = inject(ToastService);
 
   protected readonly hostUrl: string = this.configService.getApiUrl();
 
@@ -54,13 +54,10 @@ export class RegisterDialogComponent {
   }, { validators: passwordsMatchValidator() });
 
   successMessage : string  = '';
-  errorMessage   : string  = '';
   loading        : boolean = false;
-  showToast      : boolean = false;
 
   onSubmit() {
     this.loading = true;
-    this.showToast = false;
 
     const formValue = this.signupForm.value;
     const registerData: UserRegisterDto = {
@@ -74,7 +71,7 @@ export class RegisterDialogComponent {
     };
 
     if (this.signupForm.errors) {
-      this.showToast = true
+      this.toast.show('Please check your input', 'error');
     }
 
     this.authService.register(registerData).subscribe({
@@ -83,10 +80,8 @@ export class RegisterDialogComponent {
           A verification e-mail has been sent to your e-mail address.
           Please follow the instructions in the e-mail to complete your registration.`
       },
-      error: (error:string) => {
-        this.errorMessage = error;
-        this.showToast = true;
-        this.loading = false;
+      error: (error) => {
+        this.toast.show(error.error.message, 'error');
       },
       complete: () => {
         this.loading = false;

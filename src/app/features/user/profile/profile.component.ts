@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
 import { UserDetails } from '../../../core/models/auth.models';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { Enrollment } from '../../../core/models/user.models';
-import { EnrollmentService } from '../../../core/services/course/enrollment.service';
+import { Enrollment } from '../../../core/models/user-course.models';
+import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
 import { CertificateService } from '../../../core/services/course/certificate.service';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 

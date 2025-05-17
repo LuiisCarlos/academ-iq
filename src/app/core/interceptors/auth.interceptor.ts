@@ -40,12 +40,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       return authService.refresh().pipe(
-        switchMap((newToken: string) => {
-          tokenService.saveAccessToken(newToken);
+        switchMap((response) => {
+          console.log(response);
+          tokenService.saveAccessToken(response);
 
           const retryReq = req.clone({
             setHeaders: {
-              Authorization: `Bearer ${newToken}`
+              Authorization: `Bearer ${response}`
             }
           });
 

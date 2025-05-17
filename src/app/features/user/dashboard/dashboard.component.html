@@ -9,7 +9,7 @@
         <!-- Tabs Navigation -->
         <nav class="flex border-b border-[#e0e0e0] mb-8">
             @for (tab of tabs; track tab.id) {
-            <button (click)="setActiveTab(tab.id)" class="text-sm font-medium px-6 py-3 relative hover:cursor-pointer"
+            <button (click)="setActiveTab(tab.id)" class="text-xs sm:text-sm font-medium px-6 py-3 relative hover:cursor-pointer"
                 [class.text-navy-800]="activeTab === tab.id" [class.text-zinc-500]="activeTab !== tab.id">
                 {{ tab.label }}
                 @if (activeTab === tab.id) {
@@ -22,12 +22,12 @@
         <!-- Tab Content -->
         <div class="tab-content">
             @if (activeTab === 'courses') {
-            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @for (enrollment of enrollmentsActive(); track enrollment) {
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
                         [style.backgroundImage]="`url(${enrollment.course.thumbnailUrl})`">
-                        <div
+                        <div [routerLink]="['/courses', enrollment.course.id]"
                             class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover: cursor-pointer">
                         </div>
 
@@ -65,8 +65,8 @@
                         </button>
                     </div>
                     <div class="p-4">
-                        <h3 class="font-semibold text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
-                        <p class="text-zinc-600 text-sm mb-4">By {{ enrollment.course.author }}</p>
+                        <h3 class="font-semibold text-base sm:text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-xs sm:text-sm mb-4">By {{ enrollment.course.author }}</p>
 
                         <div class="mb-4">
                             <div class="h-1.5 bg-zinc-200 rounded-full overflow-hidden">
@@ -78,7 +78,7 @@
                             <!-- TODO: Review this -->
                         </div>
 
-                        <div class="flex gap-2">
+                        <div class="flex flex-col sm:flex-row gap-2">
                             <button [routerLink]="['/courses', enrollment.course.id, 'watch']"
                                 class="flex-1 text-white text-sm font-medium py-2 px-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
                                 Continue
@@ -131,7 +131,7 @@
 
             <!-- Favourites Tab -->
             @if (activeTab === 'favorites') {
-            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @for (enrollment of enrollmentsFavorites(); track enrollment) {
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
@@ -153,8 +153,8 @@
                         </button>
                     </div>
                     <div class="p-4">
-                        <h3 class="font-semibold text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
-                        <p class="text-zinc-600 text-sm mb-4">By {{ enrollment.course.author }}</p>
+                        <h3 class="font-semibold text-base sn:text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-base sm:text-sm mb-4">By {{ enrollment.course.author }}</p>
                         <button [routerLink]="['/courses/watch', enrollment.course.id]"
                             class="text-white text-sm font-medium w-full py-2 px-4 bg-navy rounded hover:bg-slate-800 cursor-pointer transition duration-300">
                             Start
@@ -185,7 +185,7 @@
 
             <!-- Archived Tab -->
             @if (activeTab === 'archived') {
-            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @for (enrollment of enrollmentsArchived(); track enrollment) {
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
@@ -227,7 +227,7 @@
 
             <!-- Completed Tab -->
             @if (activeTab === 'completed') {
-            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @for (enrollment of enrollmentsCompleted(); track enrollment) {
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
@@ -245,8 +245,8 @@
                         </span>
                     </div>
                     <div class="p-4">
-                        <h3 class="font-semibold text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
-                        <p class="text-zinc-600 text-sm mb-1">By {{ enrollment.course.author }}</p>
+                        <h3 class="font-semibold text-base sm:text-lg text-navy mb-1">{{ enrollment.course.title }}</h3>
+                        <p class="text-zinc-600 text-xs sm:text-sm mb-1">By {{ enrollment.course.author }}</p>
                         <p class="text-xs text-zinc-500 mb-4">Completed on {{ enrollment.completedAt | dateFormat:'date'
                             }}</p>
                         <div class="flex gap-2">

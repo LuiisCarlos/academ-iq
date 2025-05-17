@@ -2,7 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 
-import { Category, Course, Rating } from '../../../core/models/course.models';
+import { Category, Course } from '../../../core/models/course.models';
+import { RatingRes } from '../../../core/models/user-course.models';
 import { CourseService } from '../../../core/services/course/course.service';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 
@@ -16,9 +17,9 @@ export class CategoryDetailComponent {
   private readonly course : CourseService  = inject(CourseService);
   private readonly route  : ActivatedRoute = inject(ActivatedRoute);
 
+  ratings  : RatingRes[] = [] as RatingRes[];
   category : Category = {} as Category;
   courses  : Course[] = [] as Course[];
-  ratings  : Rating[] = [] as Rating[];
 
   constructor() {
     const categoryName = this.route.snapshot.paramMap.get('category');

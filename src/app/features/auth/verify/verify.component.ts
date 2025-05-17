@@ -2,24 +2,17 @@ import { Component, inject} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { ToastComponent } from '../../../shared/components/toast/toast.component';
-
-type ToastType = 'error' | 'success' | 'warning' | 'info';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
-  selector    : 'app-verify',
-  templateUrl : './verify.component.html',
-  styleUrl    : './verify.component.css',
-  imports     : [ToastComponent]
+  selector : 'app-verify',
+  template : ``,
 })
 export class VerifyComponent {
   private readonly route  : ActivatedRoute = inject(ActivatedRoute);
   private readonly router : Router         = inject(Router);
   private readonly auth   : AuthService    = inject(AuthService);
-
-  showToast : boolean = false;
-  message   : string = '';
-  type      : ToastType | null = null;
+  private readonly toast  : ToastService   = inject(ToastService);
 
   constructor() {
     const verifyToken: string = this.route.snapshot.queryParamMap.get('token') ?? '';
@@ -31,14 +24,11 @@ export class VerifyComponent {
     console.log('hola');
     this.auth.verify(token).subscribe({
       next: () => {
-        this.type = 'success';
-        this.message = 'You account has been successfully verified';
-        this.showToast = true;
+        this.toast.show('Your account has been successfully verified', 'success');
       },
-      error: (error: string) => {
-        this.type = 'error';
-        this.message = error ?? 'An unexpected error occurred. Please, try again later.';
-        this.showToast = true;
+      error: (error) => {
+        const message = error.error.message ?? 'An unexpected error occurred. Please, try again later.';
+        this.toast.show(message, 'error');
       },
       complete: () => {
         this.router.navigate(['/home']);

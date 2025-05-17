@@ -1,50 +1,32 @@
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
-type ToastType = 'error' | 'success' | 'warning' | 'info';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-toast',
-  templateUrl: './toast.component.html',
-  styleUrls: ['./toast.component.css']
+  templateUrl: './toast.component.html'
 })
-export class ToastComponent implements OnDestroy {
-  @Input() message : string    = '';
-  @Input() type    : ToastType = 'info';
-  @Input() set showToast(value: boolean) {
-    this._show = value;
-    if (value)
-      this.autoHide();
-  }
+export class ToastComponent implements OnInit {
+  private readonly toastService: ToastService = inject(ToastService);
 
-  @Output() toastClosed = new EventEmitter<void>();
+  message : string = '';
+  visible : boolean = false;
+  type    : 'success' | 'error' | 'warning' | 'info' = 'info';
 
-  private _show: boolean = false;
-  private timeoutId: any;
+  ngOnInit() {
+    this.toastService.toast$.subscribe(({ message, type }) => {
+      this.message = message;
+      this.type = type;
+      this.visible = true;
 
-  get show(): boolean {
-    return this._show;
-  }
-
-  autoHide(): void {
-    if (this.timeoutId)
-      clearTimeout(this.timeoutId);
-
-    this.timeoutId = setTimeout(() => {
-      this.closeToast();
-    }, 15000); // 15 segundos
+      setTimeout(() => this.visible = false, 10000);
+    });
   }
 
   closeToast(): void {
-    clearTimeout(this.timeoutId);
-    this._show = false;
-    this.toastClosed.emit();
+    this.visible = false;
   }
 
-  ngOnDestroy(): void {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-  }
   getToastStyles(): any {
     const styles = {
       error: {
@@ -79,4 +61,5 @@ export class ToastComponent implements OnDestroy {
 
     return styles[this.type] || styles.info;
   }
+
 }

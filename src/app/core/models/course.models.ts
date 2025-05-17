@@ -1,3 +1,5 @@
+import { RatingRes } from "./user-course.models";
+
 export interface Course {
     id            : number,
     title         : string ,
@@ -8,7 +10,7 @@ export interface Course {
     category      : Category,
     level         : string,
     averageRating : number,
-    ratings       : Rating[],
+    ratings       : RatingRes[],
     duration      : string,
     createdAt     : string
     requirements  : string[],
@@ -26,14 +28,6 @@ export interface Lesson {
     id   : number,
     name : string,
     file : File
-}
-
-export interface Rating {
-    rating        : number,
-    comment       : string,
-    user          : string,
-    ratedAt       : string,
-    userAvatarUrl : string
 }
 
 export interface File {

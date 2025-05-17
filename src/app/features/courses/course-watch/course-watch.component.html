@@ -1,12 +1,12 @@
 <!-- course-player.component.html -->
-<div class="max-w-[90rem] mx-auto flex flex-col lg:flex-row min-h-screen">
+<div class="max-w-[90rem] mx-auto flex flex-col lg:flex-row min-h-screen pb-40">
     <!-- Sección del reproductor (izquierda) -->
     <div class="lg:w-2/3 p-4 lg:p-6">
         <!-- Breadcrumbs -->
         <section class="flex items-center justify-between text-sm text-gray-500 mb-5">
             <div class="inline-block">
                 <a [routerLink]="['/catalog']" class="hover:text-navy">Catalog</a> /
-                <a [routerLink]="['/categories', course.category.name.toLowerCase()]" class="hover:text-navy">
+                <a [routerLink]="['/categories', course.category.name]" class="hover:text-navy">
                     {{ course.category.name}}
                 </a> /
                 <a [routerLink]="['/courses', course.id]" class="text-navy">{{ course.title }}</a>
@@ -69,7 +69,7 @@
             <!-- Header de lecciones -->
             <header class="flex items-center justify-between mb-2">
                 <h2 class="text-lg font-bold text-gray-800">Lessons</h2>
-                <span class="text-sm text-gray-500">{{ lessonsCompleted }}/15 completed</span>
+                <span class="text-sm text-gray-500">{{ lessonsCompleted }}/{{ lessonsTotal }} completed</span>
             </header>
 
 

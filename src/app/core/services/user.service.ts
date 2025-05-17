@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { ConfigService } from './config/config.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { changePasswordDto } from '../models/user.models';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
+import { ConfigService } from './config/config.service';
+import { changePasswordDto } from '../models/user.models';
 import { UserDetails } from '../models/auth.models';
-import { Enrollment } from '../models/user.models';
 
 @Injectable({
   providedIn: 'root'

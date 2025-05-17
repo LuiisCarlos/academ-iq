@@ -1,8 +1,9 @@
 import { Observable, catchError, of, switchMap, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
 import { ConfigService } from '../config/config.service';
 import { inject, Injectable } from '@angular/core';
-import { Enrollment, ProgressState } from '../../models/user.models';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Enrollment } from '../../models/user-course.models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 export class EnrollmentService {
   private readonly http = inject(HttpClient);
   private readonly config = inject(ConfigService);
+
   protected readonly apiUrl: string = this.config.getApiUrl();
 
   /**
@@ -22,12 +24,7 @@ export class EnrollmentService {
    * @returns {Observable<Enrollment>} An observable of the created enrollment
    */
   create(courseId: number, flags?: { isFavorite?: boolean }): Observable<Enrollment> {
-    return this.http.post<Enrollment>(
-      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`,
-      flags || null
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`, flags || null);
   }
 
   /**
@@ -36,11 +33,7 @@ export class EnrollmentService {
    * @returns {Observable<Enrollment[]>} An observable of the user's enrollments
    */
   findAll(): Observable<Enrollment[]> {
-    return this.http.get<Enrollment[]>(
-      `${this.apiUrl}/api/v1/users/@me/enrollments`
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<Enrollment[]>(`${this.apiUrl}/api/v1/users/@me/enrollments`);
   }
 
   /**
@@ -51,11 +44,7 @@ export class EnrollmentService {
    * @returns {Observable<Enrollment>} An observable of the enrollment
    */
   findById(courseId: number): Observable<Enrollment> {
-    return this.http.get<Enrollment>(
-      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`);
   }
 
   /**
@@ -66,9 +55,7 @@ export class EnrollmentService {
    * @returns {Observable<Enrollment>} An observable of the found or created enrollment
    */
   findOrCreate(courseId: number): Observable<Enrollment> {
-    return this.findById(courseId).pipe(
-      catchError(() => this.create(courseId))
-    );
+    return this.findById(courseId);
   }
 
   /**
@@ -77,6 +64,7 @@ export class EnrollmentService {
    *
    * @param {number} courseId - The ID of the course
    * @param {Object} updates - The properties to update
+   *
    * @returns {Observable<Enrollment>} An observable of the updated enrollment
    */
   update(courseId: number, updates: {
@@ -124,12 +112,7 @@ export class EnrollmentService {
       isCompleted: markAsCompleted
     };
 
-    return this.http.patch<Enrollment>(
-      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}/progress`,
-      updates
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.patch<Enrollment>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}/progress`, updates);
   }
 
   /**
@@ -140,11 +123,7 @@ export class EnrollmentService {
    * @returns {Observable<void>} An observable that completes when deletion is done
    */
   delete(courseId: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete<void>(`${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`);
   }
 
   /**

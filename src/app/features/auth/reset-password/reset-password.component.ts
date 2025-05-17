@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LayoutService } from '../../../core/services/config/layout.service';
 import { ConfigService } from '../../../core/services/config/config.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector    : 'app-reset-password',
@@ -15,8 +15,7 @@ import { ToastComponent } from '../../../shared/components/toast/toast.component
   imports     : [
     CommonModule,
     RouterLink,
-    ReactiveFormsModule,
-    ToastComponent
+    ReactiveFormsModule
   ]
 })
 export class ResetPasswordComponent implements OnDestroy {
@@ -24,6 +23,7 @@ export class ResetPasswordComponent implements OnDestroy {
   private readonly auth   : AuthService    = inject(AuthService);
   private readonly config : ConfigService  = inject(ConfigService);
   private readonly route  : ActivatedRoute = inject(ActivatedRoute);
+  private readonly toast  : ToastService   = inject(ToastService);
   private readonly fb     : FormBuilder    = inject(FormBuilder);
   private readonly router : Router         = inject(Router);
 
@@ -32,8 +32,6 @@ export class ResetPasswordComponent implements OnDestroy {
   recoverToken   : string = ''
   loading        : boolean = false;
   successMessage : string = '';
-  errorMessage   : string = '';
-  showToast      : boolean = false;
   toastTimeout   : any;
   resetPasswordForm: FormGroup = this.fb.group({
     newPassword     : ['', Validators.required],
@@ -51,14 +49,12 @@ export class ResetPasswordComponent implements OnDestroy {
 
   onSubmit() {
     this.loading = true;
-    this.showToast = false;
     if (this.isFormValid()) {
       const formValue: any = this.resetPasswordForm.value;
       this.auth.resetPassword(this.recoverToken, formValue.newPassword, formValue.confirmPassword)
         .subscribe({
-          error: (error: string) => {
-            this.errorMessage = error ?? 'An unexpected error occurred. Please, try again later.';
-            this.showToast = true;
+          error: (error) => {
+            this.toast.show(error.error.message, 'error');
           },
           complete: () => {
             this.loading = false;

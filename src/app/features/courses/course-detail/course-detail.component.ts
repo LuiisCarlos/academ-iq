@@ -7,11 +7,11 @@ import { CourseService } from '../../../core/services/course/course.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
-import { EnrollmentService } from '../../../core/services/course/enrollment.service';
-import { Enrollment } from '../../../core/models/user.models';
+import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
+import { Enrollment } from '../../../core/models/user-course.models';
 import { RatingStatsPipe } from '../../../shared/pipes/rating-stats.pipe';
 import { Course } from '../../../core/models/course.models';
-import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 interface Tab {
   id    : string;
@@ -27,7 +27,6 @@ interface Tab {
     CommonModule,
     TimeFormatPipe,
     CourseAccordionComponent,
-    ToastComponent
   ]
 })
 export class CourseDetailComponent {
@@ -35,6 +34,7 @@ export class CourseDetailComponent {
   private readonly courseService     : CourseService     = inject(CourseService);
   private readonly route             : ActivatedRoute    = inject(ActivatedRoute);
   private readonly authService       : AuthService       = inject(AuthService);
+  private readonly toast             : ToastService      = inject(ToastService);
   private readonly router            : Router            = inject(Router);
 
   showAllComments    : WritableSignal<boolean> = signal(false);
@@ -44,8 +44,6 @@ export class CourseDetailComponent {
   maxVisibleComments : number  = 3;
   activeTab          : string  = 'sections';
   loading            : boolean = false;
-  showToast          : boolean = false;
-  errorMessage       : string  = '';
   tabs: Tab[] = [
     { id: 'sections', label: 'Sections' },
     { id: 'ratings',  label: 'Ratings'  }
@@ -103,16 +101,14 @@ export class CourseDetailComponent {
 
   enrollUser(courseId: number, isFavorite?: boolean) {
     this.loading = true;
-    this.showToast = false;
     if (this.enrollment === null) {
       this.enrollmentService.create(courseId, { isFavorite }).subscribe({
         next: (response) => {
           this.enrollment = response;
           this.router.navigate(['/courses', courseId, 'watch']);
         },
-        error: (error: string) => {
-          this.errorMessage = error;
-          this.showToast = true;
+        error: (error) => {
+          this.toast.show(error.error.message, 'error');
         },
         complete: () => {
           this.loading = false;

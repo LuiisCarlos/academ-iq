@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { ConfigService } from '../../../core/services/config/config.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector    : 'app-login-dialog',
@@ -21,6 +22,7 @@ export class LoginDialogComponent {
   private readonly dialogRef     : MatDialogRef<LoginDialogComponent> = inject(MatDialogRef);
   private readonly authService   : AuthService   = inject(AuthService);
   private readonly configService : ConfigService = inject(ConfigService);
+  private readonly toast         : ToastService  = inject(ToastService);
   private readonly router        : Router        = inject(Router);
 
   protected readonly hostUrl = this.configService.getApiUrl();
@@ -36,7 +38,6 @@ export class LoginDialogComponent {
     }),
   });
 
-  errorMessage : string  = '';
   loading      : boolean = false;
 
   submit() {
@@ -49,10 +50,9 @@ export class LoginDialogComponent {
         this.dialogRef.close();
         this.router.navigate(['users/dashboard'])
       },
-      error: (error) => {
-        this.errorMessage = error;
-        this.loading = false;
-      },
+/*       error: (error) => {
+        this.toast.show(error.error.message, 'error');
+      }, */
       complete: () => {
         this.loading = false;
       }

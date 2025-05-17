@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Rating } from '../../core/models/course.models';
+import { RatingRes } from '../../core/models/user-course.models';
 
 @Pipe({
   name: 'ratingStats',
   standalone: true
 })
 export class RatingStatsPipe implements PipeTransform {
-  transform(ratings: Rating[]): {
+  transform(ratings: RatingRes[]): {
     average : number,
     total   : number,
     distribution: {
