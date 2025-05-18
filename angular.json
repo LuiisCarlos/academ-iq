@@ -37,18 +37,24 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/app/env/environment.ts",
+                  "with": "src/app/env/environment.prod.ts"
+                }
+              ],
               "budgets": [
-              {
-                "type": "initial",
-                "maximumWarning": "2mb",
-                "maximumError": "3mb"
-              },
-              {
-                "type": "anyComponentStyle",
-                "maximumWarning": "4kB",
-                "maximumError": "8kB"
-              }
-            ],
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
               "outputHashing": "all",
               "allowedCommonJsDependencies": [
                 "canvg",
