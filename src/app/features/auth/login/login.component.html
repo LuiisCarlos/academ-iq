@@ -40,12 +40,6 @@
                         class="text-[#888888aa] bg-white border-b border-zinc-200 my-2 px-2 py-3 w-full outline-none focus:text-black focus:border-[#666666] transition duration-500"
                         [ngClass]="{ 'text-black': loginForm.get('password')?.value }" />
 
-                    <div class="text-red-500 text-sm min-h-[1.25rem] my-1">
-                        @if (errorMessage) {
-                        <span>{{ errorMessage }}</span>
-                        }
-                    </div>
-
                     <button type="submit"
                         class="text-white text-xl bg-zinc-950 w-full py-5.5 rounded-md hover:bg-zinc-900 cursor-pointer transition duration-300">
                         @if (loading) {

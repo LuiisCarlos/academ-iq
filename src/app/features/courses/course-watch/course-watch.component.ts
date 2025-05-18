@@ -1,5 +1,5 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,6 +10,7 @@ import { Course } from '../../../core/models/course.models';
 import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
 import { Enrollment } from '../../../core/models/user-course.models';
 import { CoursePlayerComponent } from '../course-player/course-player.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-course-watch',
@@ -25,18 +26,21 @@ import { CoursePlayerComponent } from '../course-player/course-player.component'
   standalone: true
 })
 export class CourseWatchComponent {
-  private readonly courseService = inject(CourseService);
-  private readonly enrollmentService = inject(EnrollmentService);
-  private readonly route = inject(ActivatedRoute);
+  private readonly courseService     : CourseService     = inject(CourseService);
+  private readonly enrollmentService : EnrollmentService = inject(EnrollmentService);
+  private readonly route             : ActivatedRoute    = inject(ActivatedRoute);
+  private readonly toast             : ToastService      = inject(ToastService);
+
+  sectionId: WritableSignal<number> = signal<number>(0);
+  lessonId: WritableSignal<number> = signal<number>(0);
+  file: WritableSignal<File | null> = signal<File>({} as File);
 
   course: Course = {} as Course;
   enrollment: Enrollment | null = null;
   lessonsCompleted: number = 0;
   lessonsTotal: number = 0;
-  sectionId: WritableSignal<number> = signal<number>(0);
-  lessonId: WritableSignal<number> = signal<number>(0);
-  file: WritableSignal<File | null> = signal<File>({} as File);
   activeTab: string = 'description';
+  loading: boolean = false;
   isCourseCompleted: boolean = false;
   tabs = [
     { id: 'description', label: 'Description' },
@@ -116,29 +120,35 @@ export class CourseWatchComponent {
   }
 
   private markCurrentLessonAsCompleted(): void {
-    if (!this.enrollment?.progressState) {
-      this.enrollment!.progressState = {
-        currentSectionId: this.sectionId(),
-        currentLessonId: this.lessonId(),
-        completedLessons: []
-      };
+    if (!this.enrollment) return;
+
+    // Inicializar progressState si no existe
+    if (!this.enrollment.progressState) {
+        this.enrollment.progressState = {
+            currentSectionId: this.sectionId(),
+            currentLessonId: this.lessonId(),
+            completedLessons: []
+        };
     }
 
-    // Actualizar lección actual
-    this.enrollment!.progressState.currentSectionId = this.sectionId();
-    this.enrollment!.progressState.currentLessonId = this.lessonId();
+    // Actualizar la lección actual
+    this.enrollment.progressState.currentSectionId = this.sectionId();
+    this.enrollment.progressState.currentLessonId = this.lessonId();
 
-    // Añadir a completadas si no existe
-    const lessonKey = `${this.sectionId()}:${this.lessonId()}`;
-    const alreadyCompleted = this.enrollment!.progressState.completedLessons.some(
-      cl => cl.sectionId === this.sectionId() && cl.lessonId === this.lessonId()
+    // Verificar si la lección ya está marcada como completada
+    const currentSectionId = this.sectionId();
+    const currentLessonId = this.lessonId();
+
+    const isAlreadyCompleted = this.enrollment.progressState.completedLessons.some(
+        lesson => lesson.sectionId === currentSectionId && lesson.lessonId === currentLessonId
     );
 
-    if (!alreadyCompleted) {
-      this.enrollment!.progressState.completedLessons.push({
-        sectionId: this.sectionId(),
-        lessonId: this.lessonId(),
-        completedAt: new Date().toISOString()
+    // Si no está completada, añadirla
+    if (!isAlreadyCompleted) {
+      this.enrollment.progressState.completedLessons.push({
+          sectionId: currentSectionId,
+          lessonId: currentLessonId,
+          completedAt: new Date().toISOString()
       });
       this.lessonsCompleted++;
     }
@@ -172,22 +182,23 @@ export class CourseWatchComponent {
   }
 
   private updateProgress(sectionId: number, lessonId: number): void {
+    this.loading = true;
     if (!this.enrollment) return;
 
-    this.enrollmentService.updateProgress(
-      this.course.id,
-      sectionId,
-      lessonId,
-      true // Marcar como completada
-    ).subscribe({
-      next: (updatedEnrollment) => {
-        this.enrollment = updatedEnrollment;
-        this.checkCourseCompletion();
-      },
-      error: (error) => {
-        console.error('Error updating progress:', error);
-      }
-    });
+    this.enrollmentService.updateProgress(this.course.id, sectionId, lessonId, true) // Marcar como completada
+      .subscribe({
+        next: (response) => {
+          this.enrollment = response;
+          this.checkCourseCompletion();
+        },
+        error: (error) => {
+          this.toast.show(error.error.message, 'error');
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
   }
 
   private checkCourseCompletion(): void {

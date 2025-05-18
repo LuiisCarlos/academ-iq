@@ -12,7 +12,7 @@
                 <a [routerLink]="['/courses', course.id]" class="text-navy">{{ course.title }}</a>
             </div>
             <div>
-                <button (click)="nextLesson()" [disabled]="isCourseCompleted" [ngClass]="{
+                <button (click)="nextLesson()" [disabled]="isCourseCompleted || loading" [ngClass]="{
     'bg-zinc-800 text-white/50 cursor-not-allowed': isCourseCompleted,
     'bg-navy hover:bg-slate-800 text-white cursor-pointer': !isCourseCompleted
   }" class="flex items-center gap-4 text-sm font-semibold px-3 py-2.5 rounded-lg shadow-sm group transition">
@@ -79,12 +79,14 @@
                         (lessonSelected)="onLessonSelected($event)" />
                 </div>
 
-                <div class="flex justify-center animate-fade-down" [class.hidden]="!isCourseCompleted">
+                @if (isCourseCompleted) {
+                <div class="flex justify-center animate-fade-down">
                     <button [routerLink]="['/courses', course.id, 'review']"
                         class="flex items-center gap-4 text-sm text-white font-semibold px-3 py-2.5 bg-navy rounded-lg shadow-sm group hover:bg-slate-800 cursor-pointer transition">
                         Complete &nbsp; ✓
                     </button>
                 </div>
+                }
                 <!-- Lista de lecciones
                 <div class="p-3 border border-navy text-navy rounded-lg bg-blue-50 cursor-pointer">
                     <div class="flex items-center">

@@ -1,11 +1,10 @@
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { ConfigService } from '../../../core/services/config/config.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
@@ -21,13 +20,13 @@ import { ToastService } from '../../../core/services/toast.service';
 export class LoginDialogComponent {
   private readonly dialogRef     : MatDialogRef<LoginDialogComponent> = inject(MatDialogRef);
   private readonly authService   : AuthService   = inject(AuthService);
-  private readonly configService : ConfigService = inject(ConfigService);
-  private readonly toast         : ToastService  = inject(ToastService);
   private readonly router        : Router        = inject(Router);
+  private readonly toast         : ToastService  = inject(ToastService);
 
-  protected readonly hostUrl = this.configService.getApiUrl();
+  loading: boolean = false;
+  error: string | null = null;
 
-  readonly loginForm = new FormGroup({
+  loginForm = new FormGroup({
     username: new FormControl('', {
       validators  : [Validators.required],
       nonNullable : true,
@@ -37,8 +36,6 @@ export class LoginDialogComponent {
       nonNullable : true,
     }),
   });
-
-  loading      : boolean = false;
 
   submit() {
     const { username, password } = this.loginForm.value;
@@ -50,9 +47,10 @@ export class LoginDialogComponent {
         this.dialogRef.close();
         this.router.navigate(['users/dashboard'])
       },
-/*       error: (error) => {
-        this.toast.show(error.error.message, 'error');
-      }, */
+      error: (error) => {
+        this.error = error.error.message;
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false;
       }

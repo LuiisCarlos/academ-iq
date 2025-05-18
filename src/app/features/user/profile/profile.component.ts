@@ -8,6 +8,7 @@ import { Enrollment } from '../../../core/models/user-course.models';
 import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
 import { CertificateService } from '../../../core/services/course/certificate.service';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
+import { ToastService } from '../../../core/services/toast.service';
 
 
 @Component({
@@ -24,16 +25,15 @@ export class ProfileComponent {
   private readonly auth: AuthService = inject(AuthService);
   private readonly enrollment: EnrollmentService = inject(EnrollmentService);
   private readonly certificate: CertificateService = inject(CertificateService);
+  private readonly toast : ToastService = inject(ToastService);
 
   user: Signal<UserDetails | null> = this.auth.user;
   enrollments: WritableSignal<Enrollment[]> = signal<Enrollment[]>([]);
   enrollmentsCompleted = computed(() => this.enrollments().filter(e => e.isCompleted));
 
-  loading = signal(false);
-  error = signal(false);
-
-  searchQuery = '';
-  filteredEnrollments: Enrollment[] = [] ; // Initialize with all certificates
+  filteredEnrollments: Enrollment[] = [];
+  loading: boolean = false;
+  searchQuery: string = '';
 
   constructor() {
     this.loadData();
@@ -48,13 +48,8 @@ export class ProfileComponent {
     })
   }
 
-  // [FUNCIONALIDAD: Implementar lógica de descarga real]
   downloadCert(enrollment: Enrollment): void {
-    console.log('Iniciando descarga del certificado...');
-    // Aquí iría la lógica para generar/descargar el PDF
-    // Ejemplo:
-    this.loading.set(true);
-    this.error.set(false);
+    this.loading = true;
 
     const certificateData = {
       userName: this.user()?.firstname! + ' ' + this.user()?.lastname!,
@@ -63,11 +58,9 @@ export class ProfileComponent {
     };
 
     this.certificate.generate(certificateData);
+    this.loading = false;
 
-    this.loading.set(false);
-
-    // Mensaje temporal de éxito
-    //this.showSuccessToast('Certificado descargado exitosamente');
+    this.toast.show('Succesfully downloaded certificate', 'success');
   }
 
   filterCertificates() {
@@ -79,7 +72,7 @@ export class ProfileComponent {
     const query = this.searchQuery.toLowerCase();
     this.filteredEnrollments = this.enrollmentsCompleted().filter(enrollment =>
       enrollment.course.title.toLowerCase().includes(query) ||
-      enrollment.course.category.name.toLowerCase().includes(query)
+      enrollment.course.category.toLowerCase().includes(query)
     );
   }
 

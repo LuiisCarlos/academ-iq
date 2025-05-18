@@ -14,15 +14,15 @@ import { Course } from '../../../core/models/course.models';
 import { ToastService } from '../../../core/services/toast.service';
 
 interface Tab {
-  id    : string;
-  label : string;
+  id: string;
+  label: string;
 }
 
 @Component({
-  selector    : 'app-course-detail',
-  templateUrl : './course-detail.component.html',
-  styleUrl    : './course-detail.component.css',
-  imports     : [
+  selector: 'app-course-detail',
+  templateUrl: './course-detail.component.html',
+  styleUrl: './course-detail.component.css',
+  imports: [
     TimeAgoPipe,
     CommonModule,
     TimeFormatPipe,
@@ -30,23 +30,23 @@ interface Tab {
   ]
 })
 export class CourseDetailComponent {
-  private readonly enrollmentService : EnrollmentService = inject(EnrollmentService);
-  private readonly courseService     : CourseService     = inject(CourseService);
-  private readonly route             : ActivatedRoute    = inject(ActivatedRoute);
-  private readonly authService       : AuthService       = inject(AuthService);
-  private readonly toast             : ToastService      = inject(ToastService);
-  private readonly router            : Router            = inject(Router);
+  private readonly enrollmentService: EnrollmentService = inject(EnrollmentService);
+  private readonly courseService: CourseService = inject(CourseService);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly toast: ToastService = inject(ToastService);
+  private readonly router: Router = inject(Router);
 
-  showAllComments    : WritableSignal<boolean> = signal(false);
+  showAllComments: WritableSignal<boolean> = signal(false);
 
-  course             : Course            = { } as Course;
-  enrollment         : Enrollment | null = null;
-  maxVisibleComments : number  = 3;
-  activeTab          : string  = 'sections';
-  loading            : boolean = false;
+  course: Course = {} as Course;
+  enrollment: Enrollment | null = null;
+  maxVisibleComments: number = 3;
+  activeTab: string = 'sections';
+  loading: boolean = false;
   tabs: Tab[] = [
     { id: 'sections', label: 'Sections' },
-    { id: 'ratings',  label: 'Ratings'  }
+    { id: 'ratings', label: 'Ratings' }
   ];
   ratingStats = computed(() => {
     const pipe = new RatingStatsPipe();
@@ -105,7 +105,9 @@ export class CourseDetailComponent {
       this.enrollmentService.create(courseId, { isFavorite }).subscribe({
         next: (response) => {
           this.enrollment = response;
-          this.router.navigate(['/courses', courseId, 'watch']);
+          setTimeout(() => {
+            this.router.navigate(['/courses', courseId, 'watch']);
+          }, 300);
         },
         error: (error) => {
           this.toast.show(error.error.message, 'error');
@@ -119,7 +121,6 @@ export class CourseDetailComponent {
       this.router.navigate(['/courses', courseId, 'watch']);
     }
   }
-
 
   setActiveTab(tab: string) {
     this.activeTab = tab;

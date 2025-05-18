@@ -55,6 +55,7 @@ export class ResetPasswordComponent implements OnDestroy {
         .subscribe({
           error: (error) => {
             this.toast.show(error.error.message, 'error');
+            this.loading = false;
           },
           complete: () => {
             this.loading = false;

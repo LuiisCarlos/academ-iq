@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, tap, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { ConfigService } from './config/config.service';
 import { changePasswordDto } from '../models/user.models';
@@ -16,35 +16,18 @@ export class UserService {
   protected readonly apiUrl: string = this.configService.getApiUrl();
 
   updateUser(user: UserDetails) {
-    return this.http.put<UserDetails>(`${this.apiUrl}/api/v1/users/@me`, user).pipe(
-      catchError((error: HttpErrorResponse) => {
-        const errorMessage = error.error?.message || 'Unknown error';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.put<UserDetails>(`${this.apiUrl}/api/v1/users/@me`, user);
   }
 
   patchAvatar(avatarFile: File) {
     const formData = new FormData();
     formData.append('avatar', avatarFile);
 
-    return this.http.patch(`${this.apiUrl}/api/v1/users/@me/avatar`, formData)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          const errorMessage = error.error?.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
-        })
-      );
+    return this.http.patch(`${this.apiUrl}/api/v1/users/@me/avatar`, formData);
   }
 
   changePassword(passwordDto: changePasswordDto): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/api/v1/users/@me/change-password`, passwordDto)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          const errorMessage = error.error?.message || 'Unknown error';
-          return throwError(() => new Error(errorMessage));
-        })
-      );
+    return this.http.post<void>(`${this.apiUrl}/api/v1/users/@me/change-password`, passwordDto);;
   }
 
 }

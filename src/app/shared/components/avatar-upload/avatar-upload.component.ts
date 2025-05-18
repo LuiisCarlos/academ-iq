@@ -15,7 +15,7 @@ export class AvatarUploadComponent {
   @Output() uploadComplete = new EventEmitter<string>();
 
   previewUrl: string | null = null;
-  isLoading = false;
+  loading = false;
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -33,19 +33,19 @@ export class AvatarUploadComponent {
   }
 
   uploadFile(file: File) {
-    this.isLoading = true;
+    this.loading = true;
 
     this.userService.patchAvatar(file).subscribe({
       next: (response: any) => {
         this.uploadComplete.emit(response.avatarUrl);
-        this.isLoading = false;
       },
       error: (error) => {
         const message = error.error.message ?? 'An unexpected error occurred. Please, try again later.';
         this.toast.show(message, 'error');
+          this.loading = false;
       },
       complete: () => {
-        this.isLoading = false;
+        this.loading = false;
         this.previewUrl = null;
       }
     });

@@ -161,7 +161,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                 class="text-white">
                                 <path fill="currentColor" fill-rule="evenodd"
-                                    [attr.d]="enrollment.course.category.svg" />
+                                    [attr.d]="enrollment.course.categorySvg" />
                             </svg>
                         </div>
                         <h3 class="text-white font-bold text-lg">Certificate</h3>
@@ -185,7 +185,7 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Category:</span>
-                                <span class="font-medium text-navy-800">{{ enrollment.course.category.name }}</span>
+                                <span class="font-medium text-navy-800">{{ enrollment.course.category }}</span>
                             </div>
                             <!-- <div class="flex justify-between">
                                 <span class="text-gray-600">Score:</span>

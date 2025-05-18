@@ -176,7 +176,6 @@ export class CertificateService {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result as string);
-      console.log(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });

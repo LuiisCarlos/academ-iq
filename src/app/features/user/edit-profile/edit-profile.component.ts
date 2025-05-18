@@ -10,6 +10,7 @@ import { UserService } from '../../../core/services/user.service';
 import { UserDetails } from '../../../core/models/auth.models';
 import { Category } from '../../../core/models/course.models';
 import { AvatarUploadComponent } from '../../../shared/components/avatar-upload/avatar-upload.component';
+import { ToastService } from '../../../core/services/toast.service';
 
 interface Tab {
   id    : string;
@@ -31,30 +32,34 @@ export class EditProfileComponent {
   private readonly userService   : UserService   = inject(UserService);
   private readonly courseService : CourseService = inject(CourseService);
   private readonly datePipe      : DatePipe      = inject(DatePipe);
-  private readonly formBuilder   : FormBuilder   = inject(FormBuilder);
+  private readonly fb            : FormBuilder   = inject(FormBuilder);
+  private readonly toast         : ToastService = inject(ToastService);
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  avatarPreview: string | ArrayBuffer | null = null;
 
   user         : Signal<UserDetails | null> = this.authService.user;
+
+  avatarPreview: string | ArrayBuffer | null = null;
   categories   : Category[] | null  = null;
-  errorMessage : string             = '';
-  loading      : boolean            = false;
-  activeTab    : string             = 'profile';
+  loading      : boolean = false;
+  activeTab    : string  = 'profile';
   tabs: Tab[] = [
     { id: 'profile',  label: 'Profile'  },
     { id: 'about',    label: 'About Me' },
     { id: 'security', label: 'Security' }
   ]
-  userInfoForm: FormGroup = this.formBuilder.group({
-    username  : ['', Validators.required],
-    firstname : ['', Validators.required],
-    lastname  : ['', Validators.required],
-    email     : ['', [Validators.required, Validators.email]],
-    dni       : ['', Validators.required],
-    birthdate : ['', Validators.required],
+
+
+  userInfoForm: FormGroup = this.fb.group({
+    username  : [''],
+    firstname : [''],
+    lastname  : [''],
+    dni       : [''],
+    birthdate : [''],
+    email     : [this.user()?.email],
   });
-  userAboutForm: FormGroup = this.formBuilder.group({
+
+  userAboutForm: FormGroup = this.fb.group({
     githubUrl      : [''],
     linkedinUrl    : [''],
     websiteUrl     : [''],
@@ -67,10 +72,11 @@ export class EditProfileComponent {
     wantToUpgrade  : [null],
     biography      : [''],
   });
-  changePasswordForm: FormGroup = this.formBuilder.group({
+
+  changePasswordForm: FormGroup = this.fb.group({
     currentPassword : ['', Validators.required],
-    password        : ['', [Validators.required, Validators.minLength(6)]],
-    confirmPassword : ['', [Validators.required, Validators.minLength(6)]],
+    password        : ['', Validators.required],
+    confirmPassword : ['', Validators.required],
   }, { validators: passwordsMatchValidator() });
 
   constructor() {
@@ -124,9 +130,13 @@ export class EditProfileComponent {
   }
 
   private updateUser() {
-    const formValue   : any         = this.userInfoForm.value;
+    const userFormValue   : any         = this.userInfoForm.value;
+    const aboutFormValue  : any         = this.userAboutForm.value;
+    const formValue       : any         = { ...userFormValue, ...aboutFormValue };
+
     const userDetails : UserDetails = {
-      username       : formValue.username       ?? this.user()?.username,
+      username       : this.user()?.username,
+      email          : this.user()?.email,
       firstname      : formValue.firstname      ?? this.user()?.firstname,
       lastname       : formValue.lastname       ?? this.user()?.lastname,
       dni            : formValue.dni            ?? this.user()?.dni,
@@ -141,8 +151,7 @@ export class EditProfileComponent {
       workExperience : formValue.workExperience ?? this.user()?.workExperience,
       studies        : formValue.studies        ?? this.user()?.studies,
       companyName    : formValue.companyName    ?? this.user()?.companyName,
-      wantToUpgrade  : formValue.wantToUpgrade  ?? this.user()?.wantToUpgrade,
-      email          : this.user()?.email
+      wantToUpgrade  : formValue.wantToUpgrade  ?? this.user()?.wantToUpgrade
     }
 
     this.userService.updateUser(userDetails).subscribe({
@@ -150,7 +159,7 @@ export class EditProfileComponent {
         this.authService.loadUser().subscribe();
       },
       error: (error) => {
-        this.errorMessage = error;
+        this.toast.show(error, 'error');
         this.loading = false;
       },
       complete: () => {
@@ -160,7 +169,7 @@ export class EditProfileComponent {
   }
 
   private changePassword() {
-    const formValue = this.userInfoForm.value;
+    const formValue = this.changePasswordForm.value;
     const passwordDto: changePasswordDto = {
       currentPassword : formValue.currentPassword,
       newPassword     : formValue.password,
@@ -168,11 +177,15 @@ export class EditProfileComponent {
     }
 
     this.userService.changePassword(passwordDto).subscribe({
+      next: () => {
+        this.toast.show('Password changed successfully', 'success');
+      },
       error: (error) => {
-        this.errorMessage = error;
+        this.toast.show(error.error.message, 'error');
         this.loading = false;
       },
       complete: () => {
+        this.authService.logout();
         this.loading = false;
       }
     });
@@ -187,45 +200,13 @@ export class EditProfileComponent {
     }
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-
-    if (!file) return;
-
-    // Validación básica (tamaño y tipo)
-    if (file.size > 2 * 1024 * 1024) { // 2MB
-      this.errorMessage = 'Image size should be less than 2MB';
-      return;
-    }
-
-    if (!file.type.match('image.*')) {
-      this.errorMessage = 'Only image files are allowed';
-      return;
-    }
-
-    this.errorMessage = '';
-
-    // Crear vista previa
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.avatarPreview = reader.result;
-      // [FUNCIONALIDAD: Aquí podrías llamar a tu servicio para subir el avatar]
-      // this.uploadAvatar(file);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  submit() {
-    if (this.loading) return;
-
+  onSubmit() {
     this.loading = true;
-    this.errorMessage = '';
-
     const formToSubmit = this.getActiveForm();
 
     if (formToSubmit.invalid) {
-      this.errorMessage = 'Please, fill the required fields';
+      formToSubmit.markAllAsTouched();
+      this.toast.show('Please fill all required fields', 'error');
       this.loading = false;
       return;
     }
@@ -243,6 +224,10 @@ export class EditProfileComponent {
       default:
         this.loading = false;
     }
+  }
+
+  deleteAccount() {
+    //TODO
   }
 
   setActiveTab(tab: string) {

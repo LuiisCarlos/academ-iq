@@ -4,8 +4,8 @@ export const environment = {
   production: false,
   appVersion: `${version}-dev`,
 
-  apiUrl: 'https://academ-iq-api-production.up.railway.app',
-  //  apiUrl: 'http://localhost:8080',
+  // apiUrl: 'https://academ-iq-api-production.up.railway.app',
+  apiUrl: 'http://localhost:8080',
 
 
   settings: {

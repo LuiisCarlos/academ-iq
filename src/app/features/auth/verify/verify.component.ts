@@ -21,7 +21,6 @@ export class VerifyComponent {
   }
 
   verifyAccount(token: string) {
-    console.log('hola');
     this.auth.verify(token).subscribe({
       next: () => {
         this.toast.show('Your account has been successfully verified', 'success');

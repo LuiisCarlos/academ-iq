@@ -10,7 +10,7 @@
         </div>
         }
 
-        @if (isLoading) {
+        @if (loading) {
         <div class="absolute inset-0 bg-black/30 text-white rounded-full flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" stroke-dasharray="16" stroke-dashoffset="16"
@@ -27,7 +27,7 @@
     <div>
         <label class="relative btn btn-sm btn-primary cursor-pointer">
             <input type="file" class="hidden" accept="image/jpeg, image/png" (change)="onFileSelected($event)"
-                [disabled]="isLoading">
+                [disabled]="loading">
 
             <div
                 class="absolute top-3 right-3 bg-white/85 p-2 rounded-full shadow-md hover:bg-white/95 hover:text-pink-600 hover:scale-105 cursor-pointer transition-transform">

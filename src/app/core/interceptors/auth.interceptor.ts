@@ -41,7 +41,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       return authService.refresh().pipe(
         switchMap((response) => {
-          console.log(response);
           tokenService.saveAccessToken(response);
 
           const retryReq = req.clone({

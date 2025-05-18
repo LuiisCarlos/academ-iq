@@ -14,21 +14,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       let errorMessage: string = '';
 
       switch (error.status) {
-        case 401:
-          errorMessage = error.error.message ?? 'Unauthorized - Please log in again';
-          router.navigate(['/auth/login']);
-          break;
         case 403:
           errorMessage = error.error.message ?? 'Forbidden - You do not have permission to access this resource';
-          break;
-        case 404:
-          errorMessage = error.error.message ?? 'Not Found - The requested resource could not be found';
           break;
         case 500:
           errorMessage = error.error.message ?? 'Internal Server Error - Please try again later';
           break;
         default:
           errorMessage = error.error.message ?? 'An unexpected error occurred';
+          return throwError(() => error);
       }
 
       toast.show(errorMessage, 'error');

@@ -44,6 +44,12 @@
                 class="text-[#888888aa] border-b border-zinc-200 p-2 py-4 w-full mb-5 outline-none focus:text-black focus:border-[#666666] transition duration-500"
                 [ngClass]="{ 'text-black': loginForm.get('password')?.value }" />
 
+            <p class="text-red-500 text-sm min-h-5">
+                @if (error) {
+                {{ error }}
+                }
+            </p>
+
             <button mat-flat-button type="submit" [disabled]="loading"
                 class="bg-zinc-950 text-white mt-5 py-5 rounded-md text-xl hover:bg-zinc-800 cursor-pointer transition duration-300">
                 @if (loading) {

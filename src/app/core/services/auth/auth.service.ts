@@ -120,7 +120,6 @@ export class AuthService {
     const params = new HttpParams().set('token', refreshToken);
     return this.http.get<string>(`${this.hostUrl}/api/v1/auth/refresh`, { params }).pipe(
       map(response => {
-        console.log(response)
         return response;
       })
     );

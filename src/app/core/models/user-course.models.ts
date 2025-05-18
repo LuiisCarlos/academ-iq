@@ -1,5 +1,3 @@
-import { Category } from "./course.models";
-
 export interface RatingRes {
     rating        : number,
     comment       : string,
@@ -42,6 +40,7 @@ export interface Course {
     title        : string,
     author       : string,
     thumbnailUrl : string,
-    category     : Category,
+    category     : string,
+    categorySvg  : string,
     duration     : string
 }

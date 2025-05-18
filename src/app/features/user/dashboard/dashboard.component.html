@@ -32,10 +32,10 @@
                         </div>
 
                         <span
-                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-auto text-xs font-medium text-navy"
-                            [title]="enrollment.course.category.name">
-                            {{ enrollment.course.category.name }}
-                        </span>S
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
+                            [title]="enrollment.course.category">
+                            {{ enrollment.course.category }}
+                        </span>
 
                         @if (enrollment.isFavorite) {
                         <button (click)="setIsFavorite(enrollment.course.id, false)"
@@ -139,9 +139,9 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
 
                         <span
-                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-50 text-xs font-medium text-navy line-clamp-1"
-                            [title]="enrollment.course.category.name">
-                            {{ enrollment.course.category.name }}
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
+                            [title]="enrollment.course.category">
+                            {{ enrollment.course.category }}
                         </span>
 
                         <button (click)="setIsFavorite(enrollment.course.id, false)"
@@ -193,9 +193,9 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
 
                         <span
-                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-50 text-xs font-medium text-navy line-clamp-1"
-                            [title]="enrollment.course.category.name">
-                            {{ enrollment.course.category.name }}
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
+                            [title]="enrollment.course.category">
+                            {{ enrollment.course.category }}
                         </span>
                     </div>
                     <div class="p-4">
@@ -235,10 +235,11 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
 
                         <span
-                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-50 text-xs font-medium text-navy line-clamp-1"
-                            [title]="enrollment.course.category.name">
-                            {{ enrollment.course.category.name }}
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
+                            [title]="enrollment.course.category">
+                            {{ enrollment.course.category }}
                         </span>
+
                         <span
                             class="flex items-center justify-center absolute top-3 right-3 text-black text-2xl font-bold w-7.5 h-7.5 bg-white/85 rounded-full">
                             ✓

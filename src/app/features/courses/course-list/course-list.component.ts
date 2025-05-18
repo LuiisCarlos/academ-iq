@@ -105,6 +105,28 @@ export class CourseListComponent {
     ).slice(startIndex, startIndex + this.pageSize());
   }
 
+  findOrCreateEnrollment(courseId: number) {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    if (!this.enrollments().some(e => e.course.id === courseId)) {
+      this.enrollmentService.create(courseId).subscribe({
+        next: (enrollment) => {
+          this.enrollments.update(current => {
+            if (current.some(e => e.course.id === courseId))
+              return current.map(e => e.course.id === courseId ? enrollment : e);
+            else
+              return [...current, enrollment];
+          });
+        }
+      });
+    }
+
+    this.router.navigate(['/courses', courseId, 'watch']);
+  }
+
   handlePageEvent(event: PageEvent) {
     this.pageSize.set(event.pageSize);
     this.pageIndex.set(event.pageIndex)
@@ -163,6 +185,7 @@ export class CourseListComponent {
       },
       error: (error) => {
         this.toast.show(error.error.message, 'error');
+        this.loadingFavorite = false;
       },
       complete: () => {
         this.loadingFavorite = false;
