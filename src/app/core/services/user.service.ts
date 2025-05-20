@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { ConfigService } from './config/config.service';
 import { changePasswordDto } from '../models/user.models';
 import { UserDetails } from '../models/auth.models';
+import { FileRes } from '../models/course.models';
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +24,16 @@ export class UserService {
     const formData = new FormData();
     formData.append('avatar', avatarFile);
 
-    return this.http.patch(`${this.apiUrl}/api/v1/users/@me/avatar`, formData);
+    return this.http.patch<FileRes>(`${this.apiUrl}/api/v1/users/@me/avatar`, formData);
   }
 
   changePassword(passwordDto: changePasswordDto): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/api/v1/users/@me/change-password`, passwordDto);;
   }
 
+  deleteUser(): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/v1/users/@me`);
+  }
+
 }
+

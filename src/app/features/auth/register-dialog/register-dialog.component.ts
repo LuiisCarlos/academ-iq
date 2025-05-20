@@ -74,6 +74,8 @@ export class RegisterDialogComponent {
       this.toast.show('Please check your input', 'error');
     }
 
+    console.log(formValue);
+
     this.authService.register(registerData).subscribe({
       next: () => {
         this.successMessage = `You have successfully registered.

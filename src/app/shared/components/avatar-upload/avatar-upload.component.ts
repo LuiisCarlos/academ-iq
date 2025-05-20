@@ -2,14 +2,16 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 
 import { UserService } from '../../../core/services/user.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-avatar-upload',
   templateUrl: './avatar-upload.component.html',
 })
 export class AvatarUploadComponent {
-  private readonly userService: UserService = inject(UserService);
-  private readonly toast      : ToastService = inject(ToastService);
+  private readonly authService : AuthService  = inject(AuthService);
+  private readonly userService : UserService  = inject(UserService);
+  private readonly toast       : ToastService = inject(ToastService);
 
   @Input() currentAvatarUrl: string | null = null;
   @Output() uploadComplete = new EventEmitter<string>();
@@ -36,13 +38,15 @@ export class AvatarUploadComponent {
     this.loading = true;
 
     this.userService.patchAvatar(file).subscribe({
-      next: (response: any) => {
-        this.uploadComplete.emit(response.avatarUrl);
+      next: (response) => {
+        this.authService.loadUser().subscribe();
+        this.currentAvatarUrl = response.url;
+        this.uploadComplete.emit(response.url);
       },
       error: (error) => {
         const message = error.error.message ?? 'An unexpected error occurred. Please, try again later.';
         this.toast.show(message, 'error');
-          this.loading = false;
+        this.loading = false;
       },
       complete: () => {
         this.loading = false;

@@ -27,10 +27,10 @@ export interface Section {
 export interface Lesson {
     id   : number,
     name : string,
-    file : File
+    file : FileRes
 }
 
-export interface File {
+export interface FileRes {
     filename    : string,
     contentType : string,
     size        : number,

@@ -164,4 +164,8 @@ export class AuthService {
     );
   }
 
+  clearUser(): void {
+    this.currentUser.set(null);
+  }
+
 }

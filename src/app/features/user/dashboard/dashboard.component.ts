@@ -54,6 +54,9 @@ export class DashboardComponent {
       next: (response) => {
         this.enrollments.set(response);
       },
+      error: () => {
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false;
       }

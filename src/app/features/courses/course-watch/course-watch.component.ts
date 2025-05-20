@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { CourseService } from '../../../core/services/course/course.service';
-import { File } from '../../../core/models/course.models';
+import { FileRes } from '../../../core/models/course.models';
 import { CourseAccordionComponent } from '../course-accordion/course-accordion.component';
 import { Course } from '../../../core/models/course.models';
 import { EnrollmentService } from '../../../core/services/user-course/enrollment.service';
@@ -33,7 +33,7 @@ export class CourseWatchComponent {
 
   sectionId: WritableSignal<number> = signal<number>(0);
   lessonId: WritableSignal<number> = signal<number>(0);
-  file: WritableSignal<File | null> = signal<File>({} as File);
+  file: WritableSignal<FileRes | null> = signal<FileRes>({} as FileRes);
 
   course: Course = {} as Course;
   enrollment: Enrollment | null = null;

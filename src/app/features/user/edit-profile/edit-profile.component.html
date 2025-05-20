@@ -2,7 +2,7 @@
     <!-- Header minimalista -->
     <header class="mb-12 text-center">
         <h1 class="text-4xl md:text-3xl font-bold text-navy-800 mb-2">Edit Profile</h1>
-        <div class="w-20 h-px bg-zinc-300 mx-auto"></div>
+        <div class="w-20 h-0.5 bg-zinc-200 mx-auto mt-3"></div>
     </header>
 
     <main class="flex flex-col xl:flex-row justify-center gap-10 max-w-6xl mx-auto">
@@ -30,7 +30,7 @@
             <div class="space-y-8">
                 <form>
                     <h2 class="text-2xl font-light text-navy-800 mb-6">Profile Avatar</h2>
-                    <app-avatar-upload [currentAvatarUrl]="user()?.avatarUrl ?? ''"></app-avatar-upload>
+                    <app-avatar-upload [currentAvatarUrl]="user()?.avatarUrl ?? null"></app-avatar-upload>
                 </form>
 
                 <form [formGroup]="userInfoForm" (ngSubmit)="onSubmit()" class="space-y-6">
