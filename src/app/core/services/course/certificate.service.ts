@@ -16,14 +16,14 @@ export class CertificateService {
 
   protected readonly apiUrl: string = this.config.getApiUrl();
 
-  logoUrl: string = 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091207/academiq-logo_gyofsk.png'; // <- default empty, user can set manually
-  signatureUrl: string = 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091208/academiq-ceo-signature_uqqjic.png'; // <- default empty, user can set manually
+  logoUrl: string = 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091207/academiq-logo_gyofsk.png';
+  signatureUrl: string = 'https://res.cloudinary.com/duu4u98gb/image/upload/v1747091208/academiq-ceo-signature_uqqjic.png';
   watermarkText: string = 'IQ.';
 
   async generate(data: {
-    userName   : string;
-    userDni    : string;
-    enrollment : Enrollment;
+    userName: string;
+    userDni: string;
+    enrollment: Enrollment;
   }): Promise<void> {
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
@@ -85,7 +85,7 @@ export class CertificateService {
     currentX += 40;
 
     doc.setFontSize(32);
-    doc.setTextColor(0, 0, 0); // dark gray
+    doc.setTextColor(0, 0, 0);
     doc.setFont('helvetica', 'bold');
     doc.text('Academ-IQ', currentX, currentY, { align: 'left' });
 
@@ -169,7 +169,7 @@ export class CertificateService {
     // ! Contenido del curso
     //doc.addPage('a4', 'portrait');
 
-    doc.save(`certificate_iq_${data.enrollment.course.title.toLowerCase().replace(' ' , '_')}.pdf`);
+    doc.save(`certificate_iq_${data.enrollment.course.title.toLowerCase().replace(' ', '_')}.pdf`);
   }
 
   private blobToBase64(blob: Blob): Promise<string> {

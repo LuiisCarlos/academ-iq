@@ -8,12 +8,10 @@ export class TimeFormatPipe implements PipeTransform {
   transform(value: string, format: 'short' | 'long' | 'custom' = 'short', customFormat?: string): string {
     if (!value) return '';
 
-    // Dividir el string en horas, minutos y segundos
     const timeParts = value.split(':');
     const hours = timeParts.length > 0 ? Number(timeParts[0]) : 0;
     const minutes = timeParts.length > 1 ? Number(timeParts[1]) : 0;
 
-    // Validación
     if (isNaN(hours) || isNaN(minutes)) return value;
 
     switch (format) {

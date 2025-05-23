@@ -26,10 +26,10 @@ import { ToastService } from '../../../core/services/toast.service';
   standalone: true
 })
 export class CourseWatchComponent {
-  private readonly courseService     : CourseService     = inject(CourseService);
-  private readonly enrollmentService : EnrollmentService = inject(EnrollmentService);
-  private readonly route             : ActivatedRoute    = inject(ActivatedRoute);
-  private readonly toast             : ToastService      = inject(ToastService);
+  private readonly courseService: CourseService = inject(CourseService);
+  private readonly enrollmentService: EnrollmentService = inject(EnrollmentService);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly toast: ToastService = inject(ToastService);
 
   sectionId: WritableSignal<number> = signal<number>(0);
   lessonId: WritableSignal<number> = signal<number>(0);
@@ -59,20 +59,20 @@ export class CourseWatchComponent {
         this.enrollmentService.findOrCreate(courseId).subscribe({
           next: (response) => {
             this.enrollment = response;
+            this.isCourseCompleted = response.isCompleted;
             this.lessonsCompleted = response.progressState?.completedLessons?.length || 0;
             this.lessonsTotal = this.course.sections.reduce(
               (sum, section) => sum + section.lessons.length, 0
             );
             this.determineInitialLesson();
-            this.checkCourseCompletion();
-          }
+/*             this.checkCourseCompletion();
+ */          }
         });
       }
     });
   }
 
   private determineInitialLesson() {
-    // Caso 1: Usar la lección actual del progreso si existe
     if (this.enrollment?.progressState?.currentSectionId && this.enrollment?.progressState?.currentLessonId) {
       this.loadLesson(
         this.enrollment.progressState.currentSectionId,
@@ -81,7 +81,6 @@ export class CourseWatchComponent {
       return;
     }
 
-    // Caso 2: Cargar primera lección del curso
     const firstSection = this.course.sections?.[0];
     const firstLesson = firstSection?.lessons?.[0];
     if (firstSection && firstLesson) {
@@ -101,54 +100,62 @@ export class CourseWatchComponent {
   nextLesson(): void {
     if (!this.enrollment || !this.course) return;
 
-    // 1. Marcar la lección actual como completada
     this.markCurrentLessonAsCompleted();
 
-    // 2. Encontrar la siguiente lección
+
     const nextLesson = this.findNextLesson();
     if (!nextLesson) {
-      // No hay más lecciones - curso completado
-      this.isCourseCompleted = true;
+      this.markCourseAsCompleted();
       return;
     }
 
-    // 3. Cargar la nueva lección
     this.loadLesson(nextLesson.sectionId, nextLesson.lessonId);
 
-    // 4. Actualizar el progreso en el backend
     this.updateProgress(nextLesson.sectionId, nextLesson.lessonId);
+  }
+
+  private markCourseAsCompleted(): void {
+    if (!this.enrollment) return;
+
+    this.enrollmentService.update(this.course.id, { isCompleted: true })
+      .subscribe({
+        next: (response) => {
+          this.enrollment = response;
+          this.isCourseCompleted = true;
+          this.toast.show('Course completed!', 'success');
+        },
+        error: (error) => {
+          this.toast.show(error.error.message, 'error');
+        }
+      });
   }
 
   private markCurrentLessonAsCompleted(): void {
     if (!this.enrollment) return;
 
-    // Inicializar progressState si no existe
     if (!this.enrollment.progressState) {
-        this.enrollment.progressState = {
-            currentSectionId: this.sectionId(),
-            currentLessonId: this.lessonId(),
-            completedLessons: []
-        };
+      this.enrollment.progressState = {
+        currentSectionId: this.sectionId(),
+        currentLessonId: this.lessonId(),
+        completedLessons: []
+      };
     }
 
-    // Actualizar la lección actual
     this.enrollment.progressState.currentSectionId = this.sectionId();
     this.enrollment.progressState.currentLessonId = this.lessonId();
 
-    // Verificar si la lección ya está marcada como completada
     const currentSectionId = this.sectionId();
     const currentLessonId = this.lessonId();
 
     const isAlreadyCompleted = this.enrollment.progressState.completedLessons.some(
-        lesson => lesson.sectionId === currentSectionId && lesson.lessonId === currentLessonId
+      lesson => lesson.sectionId === currentSectionId && lesson.lessonId === currentLessonId
     );
 
-    // Si no está completada, añadirla
     if (!isAlreadyCompleted) {
       this.enrollment.progressState.completedLessons.push({
-          sectionId: currentSectionId,
-          lessonId: currentLessonId,
-          completedAt: new Date().toISOString()
+        sectionId: currentSectionId,
+        lessonId: currentLessonId,
+        completedAt: new Date().toISOString()
       });
       this.lessonsCompleted++;
     }
@@ -159,7 +166,6 @@ export class CourseWatchComponent {
     const currentSection = this.course.sections[currentSectionIndex];
     const currentLessonIndex = currentSection?.lessons.findIndex(l => l.id === this.lessonId()) ?? -1;
 
-    // Buscar siguiente lección en la misma sección
     if (currentLessonIndex >= 0 && currentLessonIndex < currentSection.lessons.length - 1) {
       return {
         sectionId: currentSection.id,
@@ -167,7 +173,6 @@ export class CourseWatchComponent {
       };
     }
 
-    // Buscar primera lección de la siguiente sección
     if (currentSectionIndex < this.course.sections.length - 1) {
       const nextSection = this.course.sections[currentSectionIndex + 1];
       if (nextSection.lessons.length > 0) {
@@ -189,7 +194,7 @@ export class CourseWatchComponent {
       .subscribe({
         next: (response) => {
           this.enrollment = response;
-          this.checkCourseCompletion();
+          /* this.checkCourseCompletion(); */
         },
         error: (error) => {
           this.toast.show(error.error.message, 'error');
@@ -201,7 +206,7 @@ export class CourseWatchComponent {
       });
   }
 
-  private checkCourseCompletion(): void {
+  /* private checkCourseCompletion(): void {
     if (!this.enrollment || !this.course) return;
 
     const totalLessons = this.course.sections.reduce(
@@ -209,7 +214,7 @@ export class CourseWatchComponent {
     );
 
     this.isCourseCompleted = this.enrollment.progressState?.completedLessons?.length >= totalLessons;
-  }
+  } */
 
   onLessonSelected(lessonPath: string): void {
     const [sectionIdStr, lessonIdStr] = lessonPath.split(':');
@@ -218,10 +223,8 @@ export class CourseWatchComponent {
 
     if (isNaN(sectionId) || isNaN(lessonId)) return;
 
-    // Cargar la lección seleccionada
     this.loadLesson(sectionId, lessonId);
 
-    // Actualizar progreso (solo como vista, no como completada)
     if (this.enrollment?.progressState) {
       this.enrollment.progressState.currentSectionId = sectionId;
       this.enrollment.progressState.currentLessonId = lessonId;

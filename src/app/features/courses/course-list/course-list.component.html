@@ -112,7 +112,6 @@
                 @for(course of filteredCourses; track course.id) {
                 <div
                     class="flex flex-col rounded-lg overflow-hidden shadow-sm bg-white border border-zinc-100 hover:shadow-md transition-all hover:-translate-y-1">
-                    <!-- Course Thumbnail -->
                     <a [routerLink]="['/courses/', course.id]">
                         <figure class="relative h-40 overflow-hidden">
                             <img [src]="course.thumbnailUrl" alt="Course thumbnail" class="w-full h-full object-cover">
@@ -120,11 +119,9 @@
                         </figure>
                     </a>
 
-                    <!-- Course Content -->
                     <div class="p-4 flex flex-col flex-grow">
                         <h3 class="font-semibold text-navy line-clamp-2 mb-3">{{ course.title }}</h3>
 
-                        <!-- Course Meta -->
                         <div class="grid grid-cols-2 gap-3 text-sm text-navy-600 mb-4">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
@@ -144,7 +141,6 @@
                             </div>
                         </div>
 
-                        <!-- Course Footer -->
                         <div class="flex justify-between items-center mt-auto">
                             <div class="flex items-center">
                                 <div class="flex items-center mr-1">

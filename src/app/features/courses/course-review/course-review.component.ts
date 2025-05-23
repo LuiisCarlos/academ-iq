@@ -71,7 +71,7 @@ export class CourseReviewComponent implements OnDestroy {
 
   setRating(rating: number) {
     this.reviewForm.patchValue({ rating });
-    this.currentHoverRating = 0; // Reset hover state after selection
+    this.currentHoverRating = 0;
   }
 
   setHoverRating(rating: number) {
@@ -88,7 +88,6 @@ export class CourseReviewComponent implements OnDestroy {
       rating: this.reviewForm.value.rating,
       comment: this.reviewForm.value.comment,
     }
-    // In a real app, you would send this data to your backend
     console.log('Review submitted:', this.reviewForm.value);
 
     this.ratingService.create(this.course?.id as number, ratingReq).subscribe({

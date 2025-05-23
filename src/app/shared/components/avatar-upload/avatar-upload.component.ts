@@ -42,6 +42,7 @@ export class AvatarUploadComponent {
         this.authService.loadUser().subscribe();
         this.currentAvatarUrl = response.url;
         this.uploadComplete.emit(response.url);
+        this.toast.show('Avatar updated successfully', 'success');
       },
       error: (error) => {
         const message = error.error.message ?? 'An unexpected error occurred. Please, try again later.';

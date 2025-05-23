@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 
@@ -8,18 +8,19 @@ import { CourseService } from '../../../core/services/course/course.service';
 import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 
 @Component({
-  selector    : 'app-category-detail',
-  templateUrl : './category-detail.component.html',
-  styleUrl    : './category-detail.component.css',
-  imports     : [TimeFormatPipe, RouterLink]
+  selector: 'app-category-detail',
+  templateUrl: './category-detail.component.html',
+  styleUrl: './category-detail.component.css',
+  imports: [TimeFormatPipe, RouterLink]
 })
 export class CategoryDetailComponent {
-  private readonly course : CourseService  = inject(CourseService);
-  private readonly route  : ActivatedRoute = inject(ActivatedRoute);
+  private readonly course: CourseService = inject(CourseService);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
 
-  ratings  : RatingRes[] = [] as RatingRes[];
-  category : Category = {} as Category;
-  courses  : Course[] = [] as Course[];
+  ratings: RatingRes[] = [] as RatingRes[];
+  category: Category = {} as Category;
+  courses: Course[] = [] as Course[];
+  loading: boolean = false;
 
   constructor() {
     const categoryName = this.route.snapshot.paramMap.get('category');
@@ -27,7 +28,9 @@ export class CategoryDetailComponent {
     this.loadData(categoryName as string);
   }
 
-  loadData(categoryName: string ) {
+  loadData(categoryName: string) {
+    this.loading = true;
+
     this.course.findCategoryByName(categoryName).subscribe({
       next: (response) => {
         this.category = response;
@@ -36,73 +39,28 @@ export class CategoryDetailComponent {
             this.courses = response
               .filter(c => c.category.id === this.category.id)
               .sort(() => Math.random() - 0.5)
-              .slice(0, 4);;
+              .slice(0, 8);
+            this.categoryStats.courses = this.courses.length;
+            this.categoryStats.instructors = this.courses
+              .map(c => c.author)
+              .filter((value, index, self) => self.indexOf(value) === index).length;
+            this.categoryStats.students = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
+          },
+          error: () => {
+            this.loading = false;
+          },
+          complete: () => {
+            this.loading = false;
           }
         })
-      }
+      },
     })
   }
 
-
-  // Flags to control sections
-  showCategoryDescription = true;
-  showCategoryStats = true;
-  showCategoryHeroImage = true;
-  showBenefitsSection = true;
-  showFeaturedCourses = true;
-  showInstructors = false;
-  showTestimonials = false;
-  showResources = false;
-
-  // Example data structure (would come from DB)
-
-  categoryStats = signal({
+  categoryStats = {
     courses: 42,
     instructors: 15,
     students: 12500
-  });
+  };
 
-  featuredCourses = signal([
-    {
-      id: 1,
-      title: 'Advanced JavaScript',
-      shortDescription: 'Master modern JavaScript concepts',
-      thumbnailUrl: 'path/to/thumbnail.jpg',
-      duration: 12,
-      level: 'Intermediate',
-      price: 89.99
-    },
-    {
-      id: 1,
-      title: 'Java from Scratch',
-      shortDescription: 'Master modern Java concepts',
-      thumbnailUrl: 'path/to/thumbnail.jpg',
-      duration: 12,
-      level: 'Intermediate',
-      price: 99.99
-    },
-    // ...more courses
-  ]);
-
-  categoryResources = signal([
-    {
-      id: 1,
-      title: 'asda',
-      description: 'asfasd',
-      link:'dfsd'
-    }
-  ]);
-
-  categoryTestimonials = signal([
-    {
-      id: 1,
-      name: 'asda',
-      avatarUrl: 'asfasd',
-      course:'dfsd',
-      quote: 'bebesita',
-      rating: 2,
-    }
-  ]);
-
-  // ...similar signals for other sections
 }

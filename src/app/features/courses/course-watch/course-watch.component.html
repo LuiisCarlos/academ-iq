@@ -15,9 +15,32 @@
                 <button (click)="nextLesson()" [disabled]="isCourseCompleted || loading" [ngClass]="{
     'bg-zinc-800 text-white/50 cursor-not-allowed': isCourseCompleted,
     'bg-navy hover:bg-slate-800 text-white cursor-pointer': !isCourseCompleted
-  }" class="flex items-center gap-4 text-sm font-semibold px-3 py-2.5 rounded-lg shadow-sm group transition">
+  }" class=" relative flex items-center gap-4 text-center text-sm font-semibold px-3 py-2.5 w-35 h-35 rounded-lg shadow-sm group transition">
+                    @if (!loading) {
                     Next lesson
-                    <figure [ngClass]="{ 'group-hover:rotate-45': !isCourseCompleted }" class="transition">
+                    } @else {
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                            class="inline">
+                            <circle cx="18" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                            <circle cx="12" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                            <circle cx="6" cy="12" r="0" fill="currentColor">
+                                <animate attributeName="r" begin="0" calcMode="spline" dur="1.5s"
+                                    keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                                    repeatCount="indefinite" values="0;2;0;0" />
+                            </circle>
+                        </svg>
+                    </span>
+                    }
+                    <figure [ngClass]="{ 'group-hover:rotate-45': !isCourseCompleted }" class="absolute right-3 top-3 transition">
                         <svg width="16" height="16" viewBox="0 0 14 14">
                             <path fill="currentColor"
                                 d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z">

@@ -9,33 +9,33 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
-  selector    : 'app-reset-password',
-  templateUrl : './reset-password.component.html',
-  styleUrl    : './reset-password.component.css',
-  imports     : [
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.component.html',
+  styleUrl: './reset-password.component.css',
+  imports: [
     CommonModule,
     RouterLink,
     ReactiveFormsModule
   ]
 })
 export class ResetPasswordComponent implements OnDestroy {
-  private readonly layout : LayoutService  = inject(LayoutService);
-  private readonly auth   : AuthService    = inject(AuthService);
-  private readonly config : ConfigService  = inject(ConfigService);
-  private readonly route  : ActivatedRoute = inject(ActivatedRoute);
-  private readonly toast  : ToastService   = inject(ToastService);
-  private readonly fb     : FormBuilder    = inject(FormBuilder);
-  private readonly router : Router         = inject(Router);
+  private readonly layout: LayoutService = inject(LayoutService);
+  private readonly auth: AuthService = inject(AuthService);
+  private readonly config: ConfigService = inject(ConfigService);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly toast: ToastService = inject(ToastService);
+  private readonly fb: FormBuilder = inject(FormBuilder);
+  private readonly router: Router = inject(Router);
 
   protected readonly apiUrl: string = this.config.getApiUrl();
 
-  recoverToken   : string = ''
-  loading        : boolean = false;
-  successMessage : string = '';
-  toastTimeout   : any;
+  recoverToken: string = ''
+  loading: boolean = false;
+  successMessage: string = '';
+  toastTimeout: any;
   resetPasswordForm: FormGroup = this.fb.group({
-    newPassword     : ['', Validators.required],
-    confirmPassword : ['', Validators.required]
+    newPassword: ['', Validators.required],
+    confirmPassword: ['', Validators.required]
   });
 
   constructor() {
@@ -68,9 +68,9 @@ export class ResetPasswordComponent implements OnDestroy {
   isFormValid(): boolean {
     const formValue: any = this.resetPasswordForm.value;
     return this.resetPasswordForm.value.newPassword.length >= 8 &&
-    formValue.newPassword === formValue.newPassword&&
-           this.hasUpperCase(formValue.newPassword) &&
-           this.hasNumber(formValue.newPassword);
+      formValue.newPassword === formValue.newPassword &&
+      this.hasUpperCase(formValue.newPassword) &&
+      this.hasNumber(formValue.newPassword);
   }
 
   hasUpperCase(str: string): boolean {
@@ -79,12 +79,6 @@ export class ResetPasswordComponent implements OnDestroy {
 
   hasNumber(str: string): boolean {
     return /[0-9]/.test(str);
-  }
-
-  // [FUNCIONALIDAD: Agregar manejo de visibilidad de contraseña]
-  togglePasswordVisibility(fieldId: string) {
-    const field = document.getElementById(fieldId) as HTMLInputElement;
-    field.type = field.type === 'password' ? 'text' : 'password';
   }
 
 }

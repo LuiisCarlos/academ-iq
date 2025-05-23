@@ -9,7 +9,8 @@
         <!-- Tabs Navigation -->
         <nav class="flex border-b border-[#e0e0e0] mb-8">
             @for (tab of tabs; track tab.id) {
-            <button (click)="setActiveTab(tab.id)" class="text-xs sm:text-sm font-medium px-6 py-3 relative hover:cursor-pointer"
+            <button (click)="setActiveTab(tab.id)"
+                class="text-xs sm:text-sm font-medium px-6 py-3 relative hover:cursor-pointer"
                 [class.text-navy-800]="activeTab === tab.id" [class.text-zinc-500]="activeTab !== tab.id">
                 {{ tab.label }}
                 @if (activeTab === tab.id) {
@@ -28,7 +29,7 @@
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
                         [style.backgroundImage]="`url(${enrollment.course.thumbnailUrl})`">
                         <div [routerLink]="['/courses', enrollment.course.id]"
-                            class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover: cursor-pointer">
+                            class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover:cursor-pointer">
                         </div>
 
                         <span
@@ -111,7 +112,6 @@
                 @if (enrollmentsActive().length === 0 && !loading) {
                 <div class="col-span-full py-12 text-center">
                     <div class="max-w-md mx-auto">
-                        <!-- Nuevo icono: una carpeta vacía -->
                         <svg class="mx-auto h-12 w-12 text-zinc-400" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -136,7 +136,9 @@
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
                         [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+                        <div [routerLink]="['/courses', enrollment.course.id]"
+                            class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover:cursor-pointer">
+                        </div>
 
                         <span
                             class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
@@ -190,7 +192,9 @@
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
                         [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+                        <div [routerLink]="['/courses', enrollment.course.id]"
+                            class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover:cursor-pointer">
+                        </div>
 
                         <span
                             class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
@@ -232,7 +236,9 @@
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     <div class="h-40 relative bg-cover bg-center bg-no-repeat"
                         [style.backgroundImage]="'url(' + enrollment.course.thumbnailUrl + ')'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+                        <div [routerLink]="['/courses', enrollment.course.id]"
+                            class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent hover:cursor-pointer">
+                        </div>
 
                         <span
                             class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"

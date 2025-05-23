@@ -62,6 +62,9 @@ export class CourseListComponent {
       next: (response) => {
         this.categories.set(response);
       },
+      error: () => {
+        this.loadingCourses = false;
+      },
       complete: () => {
         this.loadingCategories = false
       }
@@ -71,6 +74,9 @@ export class CourseListComponent {
     this.courseService.findAll().subscribe({
       next: (response) => {
         this.courses.set(response);
+      },
+      error: () => {
+        this.loadingCourses = false;
       },
       complete: () => {
         this.loadingCourses = false
@@ -101,7 +107,7 @@ export class CourseListComponent {
       course.title.toLowerCase().includes(this.filters.title.toLowerCase()) &&
       (selectedCategories.length === 0 || selectedCategories.includes(course.category.name)) &&
       (selectedLevels.length === 0 || selectedLevels.includes(course.level)) &&
-      (this.filters.rating === 0 || (this.filters.rating > course.averageRating))
+      (this.filters.rating === 0 || (this.filters.rating <= course.averageRating))
     ).slice(startIndex, startIndex + this.pageSize());
   }
 

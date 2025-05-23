@@ -25,6 +25,9 @@ export class CategoriesComponent {
       next: (response) => {
         this.categories = response;
       },
+      error: () => {
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false
       }

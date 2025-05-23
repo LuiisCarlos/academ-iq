@@ -99,11 +99,10 @@ export class NavbarComponent {
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
     // Controlar el scroll del body
-    if (this.isMenuOpen) {
-        document.body.classList.add('menu-open');
-    } else {
-        document.body.classList.remove('menu-open');
-    }
+    if (this.isMenuOpen)
+      document.body.classList.add('menu-open');
+    else
+      document.body.classList.remove('menu-open');
 }
 
 }

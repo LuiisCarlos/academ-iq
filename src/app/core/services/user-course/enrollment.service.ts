@@ -70,6 +70,7 @@ export class EnrollmentService {
   update(courseId: number, updates: {
     isFavorite?: boolean,
     isArchived?: boolean
+    isCompleted?: boolean,
   }): Observable<Enrollment> {
     return this.http.put<Enrollment>(
       `${this.apiUrl}/api/v1/users/@me/enrollments/${courseId}`,
@@ -77,10 +78,8 @@ export class EnrollmentService {
     ).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 404) {
-          // Enrollment not found - create new one with the desired updates
           return this.create(courseId, updates).pipe(
             switchMap(enrollment => {
-              // Return the newly created enrollment with updates already applied
               return of(enrollment);
             })
           );

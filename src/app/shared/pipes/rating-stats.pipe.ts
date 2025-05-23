@@ -30,7 +30,6 @@ export class RatingStatsPipe implements PipeTransform {
     const sum     : number = ratings.reduce((acc, curr) => acc + curr.rating, 0);
     const average : number = sum / total;
 
-    // Calcular distribución por estrellas
     const distribution = Array(5).fill(0).map((_, i) => {
       const stars = 5 - i;
       const count = ratings.filter(r => r.rating === stars).length;
