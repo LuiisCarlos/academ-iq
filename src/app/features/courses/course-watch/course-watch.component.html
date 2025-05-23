@@ -15,7 +15,7 @@
                 <button (click)="nextLesson()" [disabled]="isCourseCompleted || loading" [ngClass]="{
     'bg-zinc-800 text-white/50 cursor-not-allowed': isCourseCompleted,
     'bg-navy hover:bg-slate-800 text-white cursor-pointer': !isCourseCompleted
-  }" class=" relative flex items-center gap-4 text-center text-sm font-semibold px-3 py-2.5 w-35 h-35 rounded-lg shadow-sm group transition">
+  }" class=" relative flex items-center gap-4 text-center text-sm font-semibold px-3 py-2.5 w-35 h-10 rounded-lg shadow-sm group transition">
                     @if (!loading) {
                     Next lesson
                     } @else {
