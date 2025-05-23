@@ -1,0 +1,27 @@
+@keyframes infinite-scroll-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+}
+
+@keyframes infinite-scroll-right {
+    from { transform: translateX(-30%); }
+    to { transform: translateX(0); }
+}
+
+.scroll-left {
+    animation: infinite-scroll-left 50s linear infinite;
+    animation-play-state: running;
+}
+
+.scroll-right {
+    animation: infinite-scroll-right 30s linear infinite;
+    animation-play-state: running;
+}
+
+.scroll-left:hover {
+    animation-play-state: paused;
+}
+
+.scroll-right:hover {
+    animation-play-state: paused;
+}

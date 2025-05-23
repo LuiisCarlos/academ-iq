@@ -1,0 +1,44 @@
+<div class="flex items-center justify-center gap-6">
+    <!-- Contenedor del avatar -->
+    <div class="relative">
+        @if (previewUrl || currentAvatarUrl) {
+        <img [src]="previewUrl || currentAvatarUrl" alt="Avatar"
+            class="size-24 rounded-full object-cover border-2 border-slate-300">
+        } @else {
+        <div class="size-24 rounded-full bg-gray-200 flex items-center justify-center">
+            <span class="text-zinc-600 text-xs">No image</span>
+        </div>
+        }
+
+        @if (loading) {
+        <div class="absolute inset-0 bg-black/30 text-white rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-dasharray="16" stroke-dashoffset="16"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c4.97 0 9 4.03 9 9">
+                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="16;0" />
+                    <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate"
+                        values="0 12 12;360 12 12" />
+                </path>
+            </svg>
+        </div>
+        }
+    </div>
+
+    <div>
+        <label class="relative btn btn-sm btn-primary cursor-pointer">
+            <input type="file" class="hidden" accept="image/jpeg, image/png" (change)="onFileSelected($event)"
+                [disabled]="loading">
+
+            <div
+                class="absolute top-3 right-3 bg-white/85 p-2 rounded-full shadow-md hover:bg-white/95 hover:text-pink-600 hover:scale-105 cursor-pointer transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+        </label>
+    </div>
+</div>

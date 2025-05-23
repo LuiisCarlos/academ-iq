@@ -1,1 +1,131 @@
-<p>course-review works!</p>
+<div class="min-h-screen py-12 bg-gradient-to-r from-navy-900 via-navy-800 to-navy-700  px-4 sm:px-6 lg:px-8">
+
+    <section class=" absolute top-10 left-10 flex flex-row gap-5 items-center min-w-50">
+        <a [routerLink]="['/home']" class="hover:scale-105 transition duration-300 ">
+            @defer {
+            <img src="https://res.cloudinary.com/duu4u98gb/image/upload/v1747091207/academiq-logo_gyofsk.png" class="size-8" />
+            }
+        </a>
+        <a [routerLink]="['/home']" class="text-lg text-white font-bold">ACADEM-IQ</a>
+    </section>
+
+    <!--  Animación de ola -->
+    <section>
+        <svg class="absolute bottom-0 left-0 w-full h-70 opacity-20 animate-wave" viewBox="0 0 1440 320"
+            preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="url(#grad)" fill-opacity="0.7"
+                d="M0,128L48,138.7C96,149,192,171,288,176C384,181,480,171,576,165.3C672,160,768,160,864,181.3C960,203,1056,245,1152,261.3C1248,277,1344,267,1392,261.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+            </path>
+            <defs>
+                <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ED5C8E" />
+                    <stop offset="100%" stop-color="black" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </section>
+
+    <section class="max-w-3xl mx-auto">
+        <header class="bg-white rounded-xl shadow-xl overflow-hidden mb-8 transition-all hover:shadow-lg">
+            <div class="md:flex">
+
+                <div class="relative md:flex-shrink-0 md:w-4/7 bg-cover bg-no-repeat"
+                    [style.backgroundImage]="'url(' + course?.thumbnailUrl + ')'">
+                    <div class="absolute inset-0 bg-gradient-to-l from-navy/40 via-navy/40 to-transparent"></div>
+                </div>
+
+                <div class="p-8 text-center w-full">
+                    <div class="uppercase tracking-wide text-sm text-navy-600 font-semibold">Course Completed</div>
+                    <h2 class="mt-2 text-2xl font-bold text-gray-900">{{ course?.title }}</h2>
+                    <p class="mt-1 text-gray-600">Instructor: {{ course?.author }}</p>
+                    <div class="mt-4 flex items-center justify-center">
+                        <svg class="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                            </path>
+                        </svg>
+                        <span class="ml-1 text-gray-600">Rate this course</span>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">
+                        Completed on {{ enrollment?.completedAt | dateFormat:'custom4' }}
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Review Form -->
+        @if (!submitted) {
+        <form [formGroup]="reviewForm" (ngSubmit)="reviewForm.valid && onSubmit()"
+            class="bg-white rounded-xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-navy-800 mb-6">Share Your Experience</h2>
+            <section class="mb-8">
+                <label class="block text-sm font-medium text-navy-700 mb-3">Overall Rating</label>
+                <div class="flex items-center space-x-2">
+                    @for (star of [1, 2, 3, 4, 5]; track $index) {
+
+                    <div (click)="setRating(star)" (mouseenter)="setHoverRating(star)"
+                        (mouseleave)="resetHoverRating()">
+                        <svg class="h-12 w-12 cursor-pointer transition-transform hover:scale-110"
+                            [class.text-amber-400]="star <= (currentHoverRating || reviewForm.get('rating')?.value)"
+                            [class.text-gray-300]="star > (currentHoverRating || reviewForm.get('rating')?.value)"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                            </path>
+                        </svg>
+                    </div>
+                    }
+                </div>
+                @if (reviewForm.get('rating')?.touched && reviewForm.get('rating')?.errors) {
+                <div class="mt-2 text-sm text-rose-600">
+                    Please select a rating
+                </div>
+                }
+            </section>
+
+            <!-- Review Comment -->
+            <section class="mb-6">
+                <label for="comment" class="block text-sm font-medium text-navy-700">Detailed Review</label>
+                <textarea id="comment" formControlName="comment" rows="5"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-navy-500 focus:ring-navy-500 p-2 border"
+                    placeholder="What did you like or dislike about this course? Would you recommend it to others?"></textarea>
+                @if(reviewForm.get('comment')?.touched && reviewForm.get('comment')?.errors) {
+                <div class="mt-1 text-sm text-rose-600">
+                    @if(reviewForm.get('comment')?.errors?.['required']) {
+                    <span>Review is required</span>
+                    } @else if (reviewForm.get('comment')?.errors?.['minLength']) {
+                    <span>Review must be at least 20 characters</span>
+                    } @else if (reviewForm.get('comment')?.errors?.['maxLength']) {
+                    <span>Review must be less than 500 characters</span>
+                    }
+                </div>
+                }
+            </section>
+
+            <button type="submit"
+                class="w-full bg-navy text-white py-3 px-4 rounded-lg hover:bg-slate-800 cursor-pointer transition duration-300">
+                Submit Review
+            </button>
+        </form>
+        }
+
+        @if (submitted) {
+        <div class="bg-white rounded-xl shadow-md p-8 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h2 class="mt-4 text-2xl font-bold text-navy-800">Thank You for Your Review!</h2>
+            <p class="mt-2 text-navy-600">Your feedback helps us improve our courses and helps other learners make
+                informed decisions.</p>
+            <div class="mt-6">
+                <button [routerLink]="['/users/dashboard']"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500">
+                    Back to My Courses
+                </button>
+            </div>
+        </div>
+        }
+    </section>
+</div>

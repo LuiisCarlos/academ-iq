@@ -1,1 +1,232 @@
-<p>course-list works!</p>
+<div class="min-h-screen max-w-[90rem] mx-auto pb-40">
+    <div class="flex flex-col md:flex-row gap-6 p-6">
+        <!-- Filters Sidebar -->
+        <div class="bg-white rounded-lg shadow-sm border border-zinc-100 md:w-64 p-4 h-fit min-w-65">
+            <button (click)="resetFilters()"
+                class="bg-zinc-50 text-navy text-sm rounded-lg w-full h-9 px-3 flex items-center justify-center gap-2 hover:bg-zinc-100 cursor-pointer transition-colors duration-300 mb-4 group">
+                <span>Reset filters</span>
+                <svg width="15" height="16" viewBox="0 0 15 16"
+                    class="text-navy group-hover:rotate-360 transition duration-400">
+                    <path fill="currentColor"
+                        d="M9.54947 0H4.63158C2.08842 0 0 2.07158 0 4.63158V8.67368C0 9.04421 0.303158 9.34737 0.673684 9.34737C1.04421 9.34737 1.34737 9.04421 1.34737 8.67368V4.63158C1.34737 2.82947 2.81263 1.36421 4.61474 1.36421H9.51579C11.3516 1.36421 12.8168 2.82947 12.8168 4.63158V8.16842C12.8168 9.97053 11.3516 11.4358 9.54947 11.4358H3.46947L5.50737 9.39789C5.77684 9.12842 5.77684 8.70737 5.50737 8.43789C5.23789 8.16842 4.81684 8.16842 4.54737 8.43789L1.34737 11.6379C1.07789 11.9074 1.07789 12.3284 1.34737 12.5979L4.54737 15.7979C4.68211 15.9326 4.85053 16 5.03579 16C5.20421 16 5.38947 15.9326 5.52421 15.7979C5.79368 15.5284 5.79368 15.1074 5.52421 14.8379L3.46947 12.8H9.54947C12.1095 12.8 14.1811 10.7284 14.1811 8.16842V4.63158C14.1811 2.07158 12.0926 0 9.54947 0Z">
+                    </path>
+                </svg>
+            </button>
+
+            <h3 class="text-xs font-medium text-navy mb-3">Filter by</h3>
+
+            <input type="text" placeholder="Search" [(ngModel)]="filters.title" (input)="filterCourses()"
+                class="bg-zinc-50 text-navy text-sm rounded-lg w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200 mb-4" />
+
+            <!-- Levels Filter -->
+            <div class="bg-zinc-50 rounded-lg p-3 mb-4">
+                <p class="font-medium text-navy mb-2">Levels</p>
+                @for (level of levels; track level) {
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="level" [(ngModel)]="filters.levels[level]"
+                        (change)="filterCourses()"
+                        class="w-4 h-4 text-purple-500 bg-zinc-100 border-zinc-300 rounded focus:ring-purple-400">
+                    <span class="ms-2 text-sm text-navy">{{ level }}</span>
+                </label>
+                }
+            </div>
+
+            <!-- Categories Filter -->
+            <div class="bg-zinc-50 rounded-lg p-3 mb-4">
+                <p class="font-medium text-navy mb-2">Categories</p>
+                @if(!loadingCategories) {
+                @for (category of categories(); track category) {
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="category.name" [(ngModel)]="filters.categories[category.name]"
+                        (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">{{ category.name }}</span>
+                </label>
+                }
+                } @else {
+                <div class="flex justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-dasharray="16" stroke-dashoffset="16"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c4.97 0 9 4.03 9 9">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="16;0" />
+                            <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite"
+                                type="rotate" values="0 12 12;360 12 12" />
+                        </path>
+                    </svg>
+                </div>
+                }
+            </div>
+
+            <div class="bg-zinc-50 rounded-lg p-3 mb-4">
+                <p class="font-medium text-navy mb-2">Duration</p>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">0-1 Hour</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">0-3 Hours</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">3-6 Hours</span>
+                </label>
+                <label class="flex items-center mb-2 cursor-pointer">
+                    <input type="checkbox" [value]="0-1" (change)="filterCourses()"
+                        class="w-4 h-4 text-pink-500 bg-zinc-100 border-zinc-300 rounded focus:ring-pink-400">
+                    <span class="ms-2 text-sm text-navy">6-17 Hours</span>
+                </label>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="bg-zinc-50 rounded-lg p-3">
+                <p class="font-medium text-navy mb-2">Rating</p>
+                <div class="flex items-center justify-center" (mouseleave)="resetHover()" (change)="filterCourses()">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                    <span (click)="setRating(star)" (mouseenter)="setHover(star)" class="text-xl cursor-pointer"
+                        [class.text-zinc-300]="star > filters.rating && star > hoverRating"
+                        [class.text-yellow-300]="star <= filters.rating || star <= hoverRating">
+                        ★
+                    </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (!loadingCourses) {
+        <div class="flex-1">
+            @if (filteredCourses.length > 0) {
+            <div class="mb-6">
+                <div class="flex items-center gap-2 text-sm text-navy">
+                    <span class="font-semibold">Results</span>
+                    <span class="text-navy text-sm px-2 py-0.5 bg-blue-800/30 ring rounded-full">
+                        {{ filteredCourses.length}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @for(course of filteredCourses; track course.id) {
+                <div
+                    class="flex flex-col rounded-lg overflow-hidden shadow-sm bg-white border border-zinc-100 hover:shadow-md transition-all hover:-translate-y-1">
+                    <a [routerLink]="['/courses/', course.id]">
+                        <figure class="relative h-40 overflow-hidden">
+                            <img [src]="course.thumbnailUrl" alt="Course thumbnail" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+                        </figure>
+                    </a>
+
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="font-semibold text-navy line-clamp-2 mb-3">{{ course.title }}</h3>
+
+                        <div class="grid grid-cols-2 gap-3 text-sm text-navy-600 mb-4">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{{ course.duration | timeFormat:'short' }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                <span>{{ course.level }}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mt-auto">
+                            <div class="flex items-center">
+                                <div class="flex items-center mr-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-300"
+                                        viewBox="0 0 20 20" fill="currentColor">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="font-medium text-navy ml-1">{{ course.averageRating }}</span>
+                                </div>
+                                <span class="text-zinc-500 text-xs">({{ course.ratings.length }})</span>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button (click)="findOrCreateEnrollment(course.id)"
+                                    class="p-2 text-navy hover:text-pink-600 hover:scale-110 hover:rotate-45 cursor-pointer transition duration-300">
+                                    <svg width="18" height="18" viewBox="0 0 14 14">
+                                        <path fill="currentColor"
+                                            d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                @if (isFavorite(course.id)) {
+                                <button (click)="setIsFavorite(course.id, false)"
+                                    class="flex items-center justify-center text-navy hover:text-pink-600 hover:scale-110 cursor-pointer transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53z" />
+                                    </svg>
+                                </button>
+                                } @else {
+                                <button (click)="setIsFavorite(course.id, true)"
+                                    class="flex items-center justify-center text-navy hover:text-pink-600 hover:scale-110 cursor-pointer transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" />
+                                    </svg>
+                                </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+
+
+            @if (filteredCourses.length > pageSize()) {
+            <div class="mt-10">
+                <mat-paginator (page)="handlePageEvent($event)" [length]="courses().length" [pageSize]="pageSize"
+                    [showFirstLastButtons]="false" [pageSizeOptions]="pageSizeOptions()" [hidePageSize]="true"
+                    [pageIndex]="pageIndex" aria-label="Select page">
+                </mat-paginator>
+            </div>
+            }
+
+            } @else {
+            <div class="flex flex-col items-center justify-center h-[60vh] text-center">
+                <div class="w-20 h-20 text-navy mb-4 animate-rotate-y animate-infinite animate-duration-[4000ms]">
+                    <svg xmls="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <g fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+                            <path stroke="currentColor" stroke-linecap="round" stroke-width="1.5"
+                                d="M9 17c.85-.63 1.885-1 3-1s2.15.37 3 1" />
+                            <ellipse cx="15" cy="10.5" fill="currentColor" rx="1" ry="1.5" />
+                            <ellipse cx="9" cy="10.5" fill="currentColor" rx="1" ry="1.5" />
+                        </g>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-navy mb-2">No courses found</h3>
+                <p class="text-zinc-600 max-w-md">Try adjusting your filters or search for something different</p>
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="flex justify-center w-full mt-40">
+            <svg xmlns="http://www.w3.org/2000/svg" width="86" height="86" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-dasharray="16" stroke-dashoffset="16"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c4.97 0 9 4.03 9 9">
+                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="16;0" />
+                    <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate"
+                        values="0 12 12;360 12 12" />
+                </path>
+            </svg>
+        </div>
+        }
+    </div>
+</div>

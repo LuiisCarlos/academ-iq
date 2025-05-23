@@ -1,0 +1,16 @@
+.tab-content-container {
+  position: relative;
+  min-height: 300px; /* Ajusta según el contenido */
+}
+
+/* Asegura que las pestañas tengan posición absoluta para la transición */
+.tab-content-container > div {
+  position: absolute;
+  width: 100%;
+}
+
+/* Opcional: mejora la apariencia durante la transición */
+.tab-content-container > div {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}

@@ -1,0 +1,144 @@
+<div class="min-h-screen pb-40">
+    <section class="bg-gradient-to-b from-navy-700 to-navy py-20">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+            <h1 class="text-white text-4xl md:text-5xl font-bold mb-4">{{ category.name }}</h1>
+            <p class="text-white/90 text-xl  max-w-3xl mx-auto">
+                {{ category.shortDescription }}
+            </p>
+        </div>
+    </section>
+
+    <div class="max-w-[90rem] mx-auto px-6 lg:px-8 py-16">
+        <section class="mb-20">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/2">
+                    <h2 class="text-3xl font-bold text-navy mb-6">About {{ category.name }}</h2>
+
+                    <div class="prose max-w-none text-navy-600">
+                        {{ category.longDescription }}
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4 mt-8">
+                        <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                            <p class="text-2xl font-semibold text-navy">{{ categoryStats.courses }}</p>
+                            <p class="text-sm text-gray-600">Courses</p>
+                        </div>
+                        <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                            <p class="text-2xl font-semibold text-navy">{{ categoryStats.instructors }}</p>
+                            <p class="text-sm text-gray-600">Expert Instructors</p>
+                        </div>
+                        <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                            <p class="text-2xl font-semibold text-navy">{{ categoryStats.students }}</p>
+                            <p class="text-sm text-gray-600">Students Enrolled</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12 mb-20">
+            <h2 class="text-3xl font-bold text-navy mb-8 text-center">Why Learn {{ category.name }}?</h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                @for (benefit of category.benefits; track benefit.id) {
+                <div class="text-center">
+                    <div
+                        class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4 text-pink-600">
+                        <svg fill="none" stroke="currentColor" width="32" height="32" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                [attr.d]="benefit.svg" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-lg text-navy mb-2">{{ benefit.title }}</h3>
+                    <p class="text-zinc-600">{{ benefit.subtitle }}</p>
+
+                </div>
+                }
+            </div>
+        </section>
+
+        @if (!loading) {
+        <section class="mb-20">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-navy">Featured Courses</h2>
+                <a [routerLink]="['/catalog']"
+                    class="text-navy font-medium flex items-center hover:text-slate-700 transition">
+                    View all courses
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @for (course of courses; track course.id) {
+                <div
+                    class="flex flex-col rounded-lg overflow-hidden shadow-sm bg-white border border-zinc-100 hover:shadow-md transition-all hover:-translate-y-1">
+
+                    <figure [routerLink]="['/courses', course.id]" class="relative h-40 overflow-hidden hover:cursor-pointer">
+                        <img [src]="course.thumbnailUrl" alt="Course thumbnail" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+                        <span
+                            class="absolute bottom-3 left-3 bg-white/85 bg-opacity-90 px-3 py-1 rounded-full max-w-55 text-xs font-medium text-navy line-clamp-1 leading-relaxed"
+                            [title]="course.category.name">
+                            {{ course.category.name }}
+                        </span>
+                    </figure>
+
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="font-semibold text-navy line-clamp-2 mb-3">{{ course.title }}</h3>
+
+                        <div class="flex items-center text-sm text-zinc-500 mb-3">
+                            <span>By {{ course.author }}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-sm text-navy-600 mb-4">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{{ course.duration | timeFormat:'custom':'H h M m' }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                <span>{{ course.level }}</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mt-auto">
+                            <div class="flex items-center">
+                                <div class="flex items-center mr-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-300"
+                                        viewBox="0 0 20 20" fill="currentColor">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="font-medium text-navy ml-1">{{ course.averageRating }}</span>
+                                </div>
+                                <span class="text-zinc-500 text-xs">({{ course.ratings.length }} reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </section>
+        } @else {
+        <div class="flex justify-center w-full mt-40">
+            <svg xmlns="http://www.w3.org/2000/svg" width="86" height="86" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-dasharray="16" stroke-dashoffset="16"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c4.97 0 9 4.03 9 9">
+                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="16;0" />
+                    <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate"
+                        values="0 12 12;360 12 12" />
+                </path>
+            </svg>
+        </div>
+        }
+    </div>
+</div>

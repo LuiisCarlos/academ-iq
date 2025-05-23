@@ -1,0 +1,35 @@
+<div class="relative aspect-video w-full bg-black rounded-lg overflow-hidden">
+    @if (videoSrc) {
+    <video [src]="videoSrc" controls pause [muted]="autoplay" class="w-full h-full object-cover"
+        (loadedmetadata)="onVideoLoaded()" (error)="onVideoError()">
+        Video not supported by the browser.
+    </video>
+    } @else if (!videoSrc || isLoading) {
+    <div class="absolute inset-0 flex items-center justify-center text-white">
+        <div class="animate-pulse flex flex-col items-center text-zinc-400">
+            <svg fill="none" stroke="currentColor" width="52" height="52" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                </path>
+            </svg>
+            <p class="mt-2 text-zinc-300">{{ isLoading ? 'Loading...' : 'No video selected' }}</p>
+        </div>
+    </div>
+    }
+
+    @if (error) {
+    <div class="absolute inset-0 flex items-center justify-center bg-red-900/50 text-white p-4">
+        <div class="text-center">
+            <svg class="w-12 h-12 mx-auto text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="mt-2 font-medium">Failed at loading video</p>
+            <p class="text-sm">{{ error }}</p>
+            <button (click)="reloadVideo()" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition">
+                Retry
+            </button>
+        </div>
+    </div>
+    }
+</div>
