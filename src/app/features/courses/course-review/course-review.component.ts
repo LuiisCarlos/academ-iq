@@ -28,16 +28,17 @@ export class CourseReviewComponent implements OnDestroy {
   private readonly courseService: CourseService = inject(CourseService);
   private readonly configService: ConfigService = inject(ConfigService);
   private readonly ratingService: RatingService = inject(RatingService);
-  private readonly toast : ToastService   = inject(ToastService);
-  private readonly route : ActivatedRoute = inject(ActivatedRoute);
-  private readonly fb    : FormBuilder    = inject(FormBuilder);
+  private readonly toast: ToastService = inject(ToastService);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly fb: FormBuilder = inject(FormBuilder);
 
   protected readonly hostUrl: string = this.configService.getApiUrl();
 
   course: Course | null = null;
   enrollment: Enrollment | null = null;
-  submitted = false;
-  currentHoverRating = 0;
+  submitted: boolean = false;
+  currentHoverRating: number = 0;
+  loading: boolean = false;
   reviewForm: FormGroup = this.fb.group({
     rating: [0, [Validators.required, Validators.min(1)]],
     comment: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]],
@@ -84,6 +85,7 @@ export class CourseReviewComponent implements OnDestroy {
   }
 
   onSubmit() {
+    this.loading = true;
     const ratingReq: RatingReq = {
       rating: this.reviewForm.value.rating,
       comment: this.reviewForm.value.comment,
@@ -95,7 +97,16 @@ export class CourseReviewComponent implements OnDestroy {
         this.submitted = true;
       },
       error: (error) => {
+        this.loading = false;
+        if (error.status === 409) {
+          this.submitted = true;
+          this.toast.show('You have already submitted a review for this course.', 'error');
+          return;
+        }
         this.toast.show(error.error.message, 'error');
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
   }
