@@ -11,7 +11,7 @@
 
     <!--  Animación de ola -->
     <section>
-        <svg class="absolute bottom-0 left-0 w-full h-70 opacity-20 animate-wave" viewBox="0 0 1440 320"
+        <svg class="absolute bottom-0 left-0 w-full h-60 opacity-20 animate-wave" viewBox="0 0 1440 320"
             preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill="url(#grad)" fill-opacity="0.7"
                 d="M0,128L48,138.7C96,149,192,171,288,176C384,181,480,171,576,165.3C672,160,768,160,864,181.3C960,203,1056,245,1152,261.3C1248,277,1344,267,1392,261.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
@@ -54,6 +54,9 @@
         </header>
 
         <!-- Review Form -->
+         <span class="text-white">
+             {{ !submitted ? '' : 'Please share your feedback to help us improve our courses.' }}
+         </span>
         @if (!submitted) {
         <form [formGroup]="reviewForm" (ngSubmit)="reviewForm.valid && onSubmit()"
             class="bg-white rounded-xl shadow-xl p-8">
@@ -102,8 +105,7 @@
                 }
             </section>
 
-            <button type="submit"
-                class="w-full bg-navy text-white py-3 px-4 rounded-lg hover:bg-slate-800 cursor-pointer transition duration-300">
+            <button type="submit" class="w-full bg-navy text-white py-3 px-4 rounded-lg hover:bg-slate-800 cursor-pointer transition duration-300">
                 Submit Review
             </button>
         </form>
